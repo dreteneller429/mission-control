@@ -1,0 +1,145 @@
+<!-- Navigation Sidebar Component -->
+<aside class="sidebar" id="sidebar">
+  <!-- Mobile Menu Toggle -->
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Avatar & Status Section -->
+  <div class="sidebar-avatar-section">
+    <!-- DAVE Avatar -->
+    <div class="avatar-container">
+      <div class="avatar">
+        <div class="avatar-initials">D</div>
+        <div class="status-indicator" id="statusIndicator" data-status="online"></div>
+      </div>
+    </div>
+
+    <!-- Status Area (Expandable) -->
+    <div class="status-area">
+      <button class="status-header" id="statusToggle">
+        <div class="status-text">
+          <div class="status-label" id="statusLabel">Online</div>
+          <div class="status-activity" id="statusActivity">Building Dashboard</div>
+        </div>
+        <span class="expand-icon">▼</span>
+      </button>
+
+      <!-- Expandable Status Details -->
+      <div class="status-details" id="statusDetails">
+        <div class="status-detail-item">
+          <span class="label">Agent Status:</span>
+          <span class="value" id="agentStatus">Active</span>
+        </div>
+        <div class="status-detail-item">
+          <span class="label">Current Activity:</span>
+          <span class="value" id="currentActivity">Dashboard V4</span>
+        </div>
+        <div class="status-detail-item">
+          <span class="label">Bandwidth:</span>
+          <span class="value" id="bandwidth">45 Mb/s</span>
+        </div>
+        <div class="status-detail-item">
+          <span class="label">Next Heartbeat:</span>
+          <span class="value countdown" id="heartbeatCountdown">12s</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Items -->
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" data-page="dashboard">
+          <span class="nav-icon">⊞</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="journal">
+          <span class="nav-icon">📖</span>
+          <span class="nav-label">Journal</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="documents">
+          <span class="nav-icon">📁</span>
+          <span class="nav-label">Documents</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="agents">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Agents</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="intelligence">
+          <span class="nav-icon">🧠</span>
+          <span class="nav-label">Intelligence</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="recaps">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Weekly Recaps</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="clients">
+          <span class="nav-icon">💼</span>
+          <span class="nav-label">Clients</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="cron">
+          <span class="nav-icon">⏰</span>
+          <span class="nav-label">Cron Jobs</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="api">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">API Usage</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="workshop">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-label">Workshop</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Recent Documents Section -->
+  <div class="recent-documents">
+    <h3 class="section-title">Recent Documents</h3>
+    <ul class="recent-list">
+      <li class="recent-item">
+        <span class="recent-icon">📄</span>
+        <a href="#" class="recent-link">Execution Plan</a>
+      </li>
+      <li class="recent-item">
+        <span class="recent-icon">📋</span>
+        <a href="#" class="recent-link">Design System</a>
+      </li>
+      <li class="recent-item">
+        <span class="recent-icon">📝</span>
+        <a href="#" class="recent-link">Quick Start</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- User Profile Section -->
+  <div class="user-profile">
+    <div class="profile-avatar">D</div>
+    <div class="profile-info">
+      <div class="profile-name">David</div>
+      <div class="profile-role">Mission Control</div>
+    </div>
+  </div>
+</aside>

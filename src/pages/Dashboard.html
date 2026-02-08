@@ -1,0 +1,234 @@
+<!-- Dashboard Page Component -->
+<main class="dashboard-container" id="dashboardContainer">
+  <!-- Top Section: Stat Cards -->
+  <section class="dashboard-section stat-cards-section">
+    <div class="stat-cards-grid">
+      <!-- Status Card -->
+      <div class="glass-card stat-card status-card" data-card="status">
+        <div class="card-header">
+          <h3 class="card-title">Status</h3>
+          <span class="status-badge online">● Online</span>
+        </div>
+        <div class="card-body">
+          <div class="status-item">
+            <span class="label">Current Task:</span>
+            <span class="value">Dashboard V4 Development</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Last Activity:</span>
+            <span class="value timestamp">2 minutes ago</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost sm">View Details →</button>
+        </div>
+      </div>
+
+      <!-- Workshop Card -->
+      <div class="glass-card stat-card workshop-card" data-card="workshop">
+        <div class="card-header">
+          <h3 class="card-title">Workshop</h3>
+          <span class="tasks-count">7 Tasks</span>
+        </div>
+        <div class="card-body">
+          <div class="task-stat">
+            <div class="task-count queued">
+              <div class="number">3</div>
+              <div class="label">Queued</div>
+            </div>
+            <div class="task-count active">
+              <div class="number">2</div>
+              <div class="label">Active</div>
+            </div>
+            <div class="task-count completed">
+              <div class="number">2</div>
+              <div class="label">Completed</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost sm">View Workshop →</button>
+        </div>
+      </div>
+
+      <!-- Agents Card -->
+      <div class="glass-card stat-card agents-card" data-card="agents">
+        <div class="card-header">
+          <h3 class="card-title">Agents</h3>
+          <span class="agents-status">🟢 Active</span>
+        </div>
+        <div class="card-body">
+          <div class="agent-stat">
+            <div class="agent-count active-agents">
+              <div class="number">4</div>
+              <div class="label">Active</div>
+            </div>
+            <div class="agent-count total-agents">
+              <div class="number">12</div>
+              <div class="label">Total</div>
+            </div>
+          </div>
+          <div class="recent-activity">Recent: Sub-agent created 5m ago</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost sm">View Agents →</button>
+        </div>
+      </div>
+
+      <!-- Documents Card -->
+      <div class="glass-card stat-card documents-card" data-card="documents">
+        <div class="card-header">
+          <h3 class="card-title">Documents</h3>
+          <span class="doc-count">48 Docs</span>
+        </div>
+        <div class="card-body">
+          <div class="doc-stat">
+            <div class="number">1,247</div>
+            <div class="label">Processed</div>
+          </div>
+          <div class="recent-additions">
+            📄 DESIGN_SYSTEM.md (2h ago)<br>
+            📝 EXECUTION_PLAN.md (2h ago)
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost sm">View Documents →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Middle Section: Activity Feed + Quick Links -->
+  <section class="dashboard-section activity-section">
+    <div class="activity-container">
+      <!-- Live Activity Feed -->
+      <div class="activity-feed-wrapper">
+        <div class="section-header">
+          <h2 class="section-title">Live Activity Feed</h2>
+          <span class="feed-indicator">🔴 Live</span>
+        </div>
+        
+        <div class="activity-feed" id="activityFeed">
+          <!-- Activity entries will be populated by JavaScript -->
+          <div class="activity-entry">
+            <div class="entry-timestamp">now</div>
+            <div class="entry-dot" style="background-color: #64D2FF;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #64D2FF;">Commit</span>
+              <span class="entry-description">feat(ui): Dashboard V4 complete — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">1m ago</div>
+            <div class="entry-dot" style="background-color: #30D158;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #30D158;">Deliverable Added</span>
+              <span class="entry-description">Navigation Sidebar component — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">3m ago</div>
+            <div class="entry-dot" style="background-color: #FF9F0A;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #FF9F0A;">Task Updated</span>
+              <span class="entry-description">Building responsive layout — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">5m ago</div>
+            <div class="entry-dot" style="background-color: #BF5AF2;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #BF5AF2;">Sub-agent Created</span>
+              <span class="entry-description">Dashboard Builder (phase-2-nav-dashboard) — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">8m ago</div>
+            <div class="entry-dot" style="background-color: #007AFF;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #007AFF;">Status Updated</span>
+              <span class="entry-description">Working on design implementation — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">15m ago</div>
+            <div class="entry-dot" style="background-color: rgba(255, 255, 255, 0.3);"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: rgba(255, 255, 255, 0.6);">Heartbeat</span>
+              <span class="entry-description">System online, all services running — Gateway</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">22m ago</div>
+            <div class="entry-dot" style="background-color: #007AFF;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #007AFF;">Status Updated</span>
+              <span class="entry-description">Idle (30 mins) — DAVE</span>
+            </div>
+          </div>
+          <div class="activity-entry">
+            <div class="entry-timestamp">38m ago</div>
+            <div class="entry-dot" style="background-color: #FF453A;"></div>
+            <div class="entry-content">
+              <span class="entry-action" style="color: #FF453A;">Error</span>
+              <span class="entry-description">CSS import timeout (retried) — System</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="quick-links">
+        <h3 class="section-title">Quick Links</h3>
+        <div class="quick-buttons">
+          <button class="btn btn-glass-pill">Workshop Queue</button>
+          <button class="btn btn-glass-pill">Client Intelligence</button>
+          <button class="btn btn-glass-pill">DocuDigest</button>
+          <button class="btn btn-glass-pill btn-primary">+ Add Task</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Section: Recent Commits -->
+  <section class="dashboard-section commits-section">
+    <div class="section-header">
+      <h2 class="section-title">Recent Commits</h2>
+      <a href="#" class="view-all">View all →</a>
+    </div>
+    
+    <div class="commits-log" id="commitsLog">
+      <!-- Commit entries will be populated by JavaScript -->
+      <div class="commit-entry">
+        <div class="commit-emoji">✨</div>
+        <div class="commit-message">feat(design): iOS Liquid Glass Design System</div>
+        <div class="commit-author">DAVE</div>
+        <div class="commit-time">5m ago</div>
+      </div>
+      <div class="commit-entry">
+        <div class="commit-emoji">📝</div>
+        <div class="commit-message">docs: Execution plan created</div>
+        <div class="commit-author">DAVE</div>
+        <div class="commit-time">2h ago</div>
+      </div>
+      <div class="commit-entry">
+        <div class="commit-emoji">🚀</div>
+        <div class="commit-message">initial: Project setup</div>
+        <div class="commit-author">DAVE</div>
+        <div class="commit-time">3h ago</div>
+      </div>
+      <div class="commit-entry">
+        <div class="commit-emoji">🔧</div>
+        <div class="commit-message">chore: Configure build tools</div>
+        <div class="commit-author">DAVE</div>
+        <div class="commit-time">4h ago</div>
+      </div>
+      <div class="commit-entry">
+        <div class="commit-emoji">📦</div>
+        <div class="commit-message">build: Add npm dependencies</div>
+        <div class="commit-author">DAVE</div>
+        <div class="commit-time">5h ago</div>
+      </div>
+    </div>
+  </section>
+</main>

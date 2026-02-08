@@ -1,0 +1,295 @@
+<!-- Journal Page Component -->
+<main class="journal-container" id="journalContainer">
+  <!-- Header Section -->
+  <section class="journal-header">
+    <div class="header-content">
+      <h1 class="page-title">Journal</h1>
+      <p class="page-subtitle">Personal reflections and daily entries</p>
+    </div>
+    
+    <!-- Date Picker Section -->
+    <div class="date-picker-section">
+      <button class="btn btn-ghost sm" id="prevDayBtn" title="Previous day">←</button>
+      
+      <div class="date-display-container">
+        <input type="date" id="journalDatePicker" class="date-input" />
+        <span class="date-display" id="dateDisplay">Today</span>
+      </div>
+      
+      <button class="btn btn-ghost sm" id="nextDayBtn" title="Next day">→</button>
+    </div>
+  </section>
+
+  <!-- Journal Entry Display -->
+  <section class="journal-content">
+    <div class="journal-entry-wrapper">
+      <!-- Entry loaded dynamically -->
+      <div id="journalEntryContainer" class="journal-entry-display">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading entry...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="journal-stats">
+    <div class="stat-item">
+      <span class="stat-label">Entries This Week</span>
+      <span class="stat-value" id="entriesThisWeek">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Entries This Month</span>
+      <span class="stat-value" id="entriesThisMonth">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Total Entries</span>
+      <span class="stat-value" id="totalEntries">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Longest Streak</span>
+      <span class="stat-value" id="longestStreak">0 days</span>
+    </div>
+  </section>
+</main>
+
+<style>
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.journal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.date-picker-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.date-input {
+  display: none;
+}
+
+.date-display-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.date-display {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  background: var(--bg-glass-hover);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.date-display:hover {
+  background: var(--bg-glass-active);
+  border-color: var(--border-glass-highlight);
+}
+
+.journal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.journal-entry-wrapper {
+  position: relative;
+  min-height: 400px;
+}
+
+.journal-entry-display {
+  padding: 2rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  line-height: 1.8;
+}
+
+.journal-entry-display.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-secondary);
+}
+
+.journal-entry-display.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 400px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-glass);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.journal-entry-display h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-blue);
+}
+
+.journal-entry-display h3 {
+  font-size: 1.2rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-teal);
+}
+
+.journal-entry-display p {
+  margin-bottom: 1rem;
+}
+
+.journal-entry-display ul,
+.journal-entry-display ol {
+  margin: 1rem 0 1rem 2rem;
+}
+
+.journal-entry-display li {
+  margin-bottom: 0.5rem;
+}
+
+.journal-entry-display blockquote {
+  border-left: 3px solid var(--accent-blue);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.journal-entry-display code {
+  background: var(--bg-glass-active);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+}
+
+.journal-entry-display pre {
+  background: var(--bg-glass-active);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.journal-entry-display pre code {
+  background: none;
+  padding: 0;
+}
+
+.journal-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+@media (max-width: 768px) {
+  .journal-container {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .date-picker-section {
+    flex-direction: column;
+  }
+  
+  .journal-entry-display {
+    padding: 1.5rem;
+    min-height: 300px;
+  }
+}
+</style>

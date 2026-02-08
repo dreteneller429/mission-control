@@ -1,0 +1,706 @@
+<!-- Intelligence Page Component -->
+<main class="intelligence-container" id="intelligenceContainer">
+  <!-- Left Panel: Report List -->
+  <aside class="intelligence-sidebar">
+    <!-- Header -->
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">Intelligence Feed</h2>
+      <span class="report-count" id="reportCount">0 reports</span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-wrapper">
+      <input 
+        type="text" 
+        class="search-input" 
+        id="searchInput" 
+        placeholder="Search reports..."
+        aria-label="Search intelligence reports"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters">
+      <button class="filter-pill" data-category="all" data-selected="true">
+        All Reports
+      </button>
+      <button class="filter-pill" data-category="BUSINESS_INTELLIGENCE" style="background-color: rgba(0, 122, 255, 0.15); border-color: #007AFF;">
+        Business
+      </button>
+      <button class="filter-pill" data-category="PRODUCTIVITY_INTELLIGENCE" style="background-color: rgba(100, 210, 255, 0.15); border-color: #64D2FF;">
+        Productivity
+      </button>
+      <button class="filter-pill" data-category="RESEARCH_INTELLIGENCE" style="background-color: rgba(191, 90, 242, 0.15); border-color: #BF5AF2;">
+        Research
+      </button>
+      <button class="filter-pill" data-category="SOURCE_INTELLIGENCE" style="background-color: rgba(48, 209, 88, 0.15); border-color: #30D158;">
+        Source
+      </button>
+      <button class="filter-pill" data-category="MARKET_INTELLIGENCE" style="background-color: rgba(255, 159, 10, 0.15); border-color: #FF9F0A;">
+        Market
+      </button>
+    </div>
+
+    <!-- Report List -->
+    <div class="reports-list" id="reportsList">
+      <!-- Reports will be populated by JavaScript -->
+      <div class="report-item skeleton">
+        <div class="report-skeleton-title"></div>
+        <div class="report-skeleton-meta"></div>
+      </div>
+      <div class="report-item skeleton">
+        <div class="report-skeleton-title"></div>
+        <div class="report-skeleton-meta"></div>
+      </div>
+      <div class="report-item skeleton">
+        <div class="report-skeleton-title"></div>
+        <div class="report-skeleton-meta"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Panel: Report View -->
+  <section class="intelligence-main">
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📚</div>
+      <h2 class="empty-title">Select a Report</h2>
+      <p class="empty-description">Choose an intelligence report from the list to view detailed analysis, findings, and recommended strategies.</p>
+    </div>
+
+    <!-- Report View (Hidden until selection) -->
+    <div class="report-view" id="reportView" style="display: none;">
+      <!-- Top Controls -->
+      <div class="report-header">
+        <div class="header-left">
+          <span class="category-badge" id="reportCategoryBadge"></span>
+          <button class="btn-back" id="backButton" title="Back to list">
+            ← Back
+          </button>
+        </div>
+        <button class="btn btn-primary pill" id="deployStrategyBtn">
+          🚀 Deploy Strategy
+        </button>
+      </div>
+
+      <!-- Report Title -->
+      <div class="report-title-section">
+        <h1 class="report-title" id="reportTitle"></h1>
+        <p class="report-subtitle" id="reportSubtitle"></p>
+        <div class="report-meta">
+          <span class="report-timestamp" id="reportTimestamp"></span>
+          <span class="report-author" id="reportAuthor"></span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Main Content Area -->
+      <div class="report-content-wrapper">
+        <!-- Left Column: Breakdown -->
+        <div class="report-breakdown">
+          <h2 class="section-heading">📊 Breakdown</h2>
+          <div class="breakdown-content" id="breakdownContent">
+            <!-- Markdown content will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Right Column: Sidebar Cards -->
+        <aside class="report-sidebar">
+          <!-- Impact Card -->
+          <div class="glass-card impact-card">
+            <div class="card-icon">💼</div>
+            <h3 class="card-title">Impact</h3>
+            <p class="card-content" id="impactContent"></p>
+          </div>
+
+          <!-- Strategy Card -->
+          <div class="glass-card strategy-card">
+            <div class="card-icon">🎯</div>
+            <h3 class="card-title">Strategy</h3>
+            <p class="card-content" id="strategyContent"></p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Success Message -->
+      <div class="deploy-message" id="deployMessage" style="display: none;">
+        <div class="message-content">
+          <span class="message-icon">✅</span>
+          <span class="message-text">Strategy deployed to Workshop</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+/* Intelligence Page Styles */
+.intelligence-container {
+  display: flex;
+  height: 100%;
+  gap: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, rgba(100, 210, 255, 0.05) 100%);
+}
+
+/* Sidebar Styles */
+.intelligence-sidebar {
+  width: 320px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.sidebar-header {
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.report-count {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* Search Bar */
+.search-wrapper {
+  position: relative;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(100, 210, 255, 0.5);
+  box-shadow: 0 0 12px rgba(100, 210, 255, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Category Filters */
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  max-height: 90px;
+}
+
+.filter-pill {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.filter-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.filter-pill[data-selected="true"] {
+  background: rgba(100, 210, 255, 0.25);
+  border-color: #64D2FF;
+  color: #64D2FF;
+}
+
+/* Reports List */
+.reports-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.report-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: rgba(100, 210, 255, 0.5);
+}
+
+.report-item.active {
+  background: rgba(100, 210, 255, 0.15);
+  border-left-color: #64D2FF;
+}
+
+.report-title-sm {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.report-meta-sm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.category-tag-sm {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Skeleton Loading */
+.report-item.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-skeleton-title {
+  height: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  animation: shimmer 2s infinite;
+}
+
+.report-skeleton-meta {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  animation: shimmer 2s infinite 0.1s;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+/* Main Content Area */
+.intelligence-main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+
+.empty-description {
+  font-size: 14px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Report View */
+.report-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: rgba(100, 210, 255, 0.8);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background: rgba(100, 210, 255, 0.1);
+  color: #64D2FF;
+}
+
+/* Report Title Section */
+.report-title-section {
+  margin-bottom: 24px;
+}
+
+.report-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.report-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.report-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.report-timestamp::before {
+  content: "📅 ";
+}
+
+.report-author::before {
+  content: "✍️ ";
+}
+
+/* Section Divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  margin: 24px 0;
+}
+
+/* Content Wrapper */
+.report-content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  flex: 1;
+}
+
+.report-breakdown {
+  min-width: 0;
+}
+
+.section-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breakdown-content {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.breakdown-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 16px 0 8px 0;
+}
+
+.breakdown-content ul,
+.breakdown-content ol {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.breakdown-content li {
+  margin-bottom: 6px;
+}
+
+.breakdown-content strong {
+  color: #64D2FF;
+}
+
+.breakdown-content code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #FFD700;
+}
+
+/* Sidebar Cards */
+.report-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: fit-content;
+  position: sticky;
+  top: 0;
+}
+
+.impact-card,
+.strategy-card {
+  padding: 16px !important;
+}
+
+.card-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+
+.card-content {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Deploy Message */
+.deploy-message {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(48, 209, 88, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(48, 209, 88, 0.4);
+  border-radius: 12px;
+  padding: 12px 20px;
+  animation: slideUp 0.3s ease, slideDown 0.3s ease 2.7s;
+  z-index: 1000;
+}
+
+.message-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #30D158;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.message-icon {
+  font-size: 18px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: #007AFF;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #0051D5;
+  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+}
+
+.btn.pill {
+  border-radius: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .intelligence-container {
+    flex-direction: column;
+  }
+
+  .intelligence-sidebar {
+    width: 100%;
+    max-height: 40%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .intelligence-main {
+    padding: 24px;
+  }
+
+  .report-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .report-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .intelligence-sidebar {
+    width: 100%;
+    max-height: 50%;
+  }
+
+  .report-title {
+    font-size: 24px;
+  }
+
+  .report-meta-sm {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .category-filters {
+    gap: 6px;
+  }
+
+  .filter-pill {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-height: 600px) {
+  .report-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .report-sidebar {
+    position: static;
+  }
+}
+</style>

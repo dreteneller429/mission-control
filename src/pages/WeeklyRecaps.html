@@ -1,0 +1,232 @@
+<!-- Weekly Recaps Page Component -->
+<main class="weekly-recaps-container" id="weeklyrRecapsContainer">
+  <!-- Header Section -->
+  <section class="recaps-header">
+    <div class="header-content">
+      <h1 class="page-title">Weekly Recaps</h1>
+      <p class="page-subtitle">Summary of activities, achievements, and insights</p>
+    </div>
+    
+    <!-- Week Selector -->
+    <div class="week-selector">
+      <button class="btn btn-ghost sm" id="prevWeekBtn">← Previous Week</button>
+      
+      <div class="week-display">
+        <span class="week-label" id="weekDisplay">Week of Jan 20</span>
+      </div>
+      
+      <button class="btn btn-ghost sm" id="nextWeekBtn">Next Week →</button>
+    </div>
+  </section>
+
+  <!-- Recap Content -->
+  <section class="recap-content" id="recapContent">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading recap...</p>
+    </div>
+  </section>
+</main>
+
+<style>
+.weekly-recaps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.recaps-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.week-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.week-display {
+  padding: 0.5rem 1rem;
+  background: var(--bg-glass-hover);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+}
+
+.week-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.recap-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 400px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-glass);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.recap-card {
+  padding: 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+}
+
+.recap-card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recap-card-icon {
+  font-size: 1.5rem;
+}
+
+.recap-metric {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+.metric-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.recap-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.recap-list-item {
+  padding: 0.75rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.recap-list-item::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--accent-green);
+  font-weight: bold;
+}
+
+.recap-issues .recap-list-item::before {
+  content: '!';
+  color: var(--accent-orange);
+}
+
+.recap-recommendations .recap-list-item::before {
+  content: '→';
+  color: var(--accent-teal);
+}
+
+.recap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .weekly-recaps-container {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .week-selector {
+    flex-direction: column;
+  }
+  
+  .recap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

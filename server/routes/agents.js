@@ -1,0 +1,151 @@
+const express = require('express');
+const router = express.Router();
+const fs = require('fs');
+const path = require('path');
+const storage = require('../db/storage');
+
+// Initialize agents collection
+storage.initCollection('agents', [
+  {
+    id: 'dave-main',
+    name: 'DAVE',
+    role: 'Primary Agent',
+    status: 'online',
+    description: 'Main autonomous agent - handles core decision-making and task execution',
+    uptime: '24d 12h',
+    lastActivity: '2026-02-08T18:10:30Z',
+    capabilities: ['planning', 'execution', 'decision-making', 'analysis'],
+    health: 'optimal',
+    profile: {
+      mission: 'Retire by 30. Provide for family. Build 8-figure business.',
+      principles: [
+        'Accountability First',
+        'Protect Time',
+        'Proactive Executive',
+        'Direct Communication'
+      ]
+    }
+  },
+  {
+    id: 'subagent-1',
+    name: 'Phase 2 Navigator',
+    role: 'Sub-agent',
+    status: 'idle',
+    description: 'Handles navigation component development',
+    uptime: '8h 30m',
+    lastActivity: '2026-02-08T16:45:00Z',
+    capabilities: ['ui-development', 'testing'],
+    health: 'good',
+    parent: 'dave-main'
+  }
+]);
+
+// Get all agents
+router.get('/', (req, res) => {
+  try {
+    const agents = storage.findAll('agents');
+    res.json(agents);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single agent
+router.get('/:id', (req, res) => {
+  try {
+    let agent = storage.findById('agents', req.params.id);
+    
+    // Special case: load DAVE profile from SOUL.md
+    if (req.params.id === 'dave-main') {
+      try {
+        const soulPath = path.join(process.env.REPO_PATH || '/home/clawd/.openclaw/workspace', 'SOUL.md');
+        if (fs.existsSync(soulPath)) {
+          agent = agent || { id: 'dave-main' };
+          agent.soulData = fs.readFileSync(soulPath, 'utf8');
+        }
+      } catch (e) {
+        console.error('Could not load SOUL.md:', e.message);
+      }
+    }
+    
+    if (!agent) {
+      return res.status(404).json({ error: 'Agent not found' });
+    }
+    res.json(agent);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get DAVE profile (main agent)
+router.get('/dave/profile', (req, res) => {
+  try {
+    const agent = storage.findById('agents', 'dave-main');
+    const soulPath = path.join(process.env.REPO_PATH || '/home/clawd/.openclaw/workspace', 'SOUL.md');
+    
+    let profile = agent || {
+      id: 'dave-main',
+      name: 'DAVE',
+      role: 'Primary Agent',
+      status: 'online'
+    };
+
+    if (fs.existsSync(soulPath)) {
+      profile.soulData = fs.readFileSync(soulPath, 'utf8');
+    }
+
+    res.json(profile);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get active sub-agents
+router.get('/subagents/active', (req, res) => {
+  try {
+    const agents = storage.findAll('agents');
+    const subagents = agents.filter(a => a.role === 'Sub-agent' && a.status === 'online');
+    res.json(subagents);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create new agent
+router.post('/', (req, res) => {
+  try {
+    const { name, role, description, capabilities } = req.body;
+    const agent = {
+      id: `agent-${Date.now()}`,
+      name,
+      role,
+      description,
+      status: 'online',
+      capabilities: capabilities || [],
+      created_at: new Date().toISOString(),
+      lastActivity: new Date().toISOString(),
+      uptime: '0h'
+    };
+
+    storage.add('agents', agent);
+    res.status(201).json(agent);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update agent
+router.patch('/:id', (req, res) => {
+  try {
+    const updates = req.body;
+    const updated = storage.update('agents', req.params.id, updates);
+    if (!updated) {
+      return res.status(404).json({ error: 'Agent not found' });
+    }
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

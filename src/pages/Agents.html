@@ -1,0 +1,92 @@
+<!-- Agents Page Component -->
+<main class="agents-container" id="agentsContainer">
+  <!-- Tabs Navigation -->
+  <div class="agents-tabs-nav">
+    <button class="tab-button active" data-tab="personnel">
+      <span class="tab-icon">👥</span>
+      <span class="tab-label">Personnel</span>
+    </button>
+    <button class="tab-button" data-tab="comms">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">Comms</span>
+    </button>
+  </div>
+
+  <!-- ====================================================================
+       PERSONNEL TAB
+       ==================================================================== -->
+  <div class="tab-panel active" id="personnelTab" data-tab="personnel">
+    <div class="agents-layout">
+      <!-- Left Sidebar: Agent List -->
+      <aside class="agents-sidebar glass-card">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">Active Agents</h2>
+          <span class="agents-count">2</span>
+        </div>
+
+        <div class="agent-list" id="agentList">
+          <!-- Agent items populated by JS -->
+        </div>
+      </aside>
+
+      <!-- Right Panel: Agent Profile Card -->
+      <section class="agents-main">
+        <div class="agent-profile glass-card" id="agentProfile">
+          <!-- Profile content populated by JS -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       COMMS TAB
+       ==================================================================== -->
+  <div class="tab-panel" id="commsTab" data-tab="comms">
+    <div class="comms-container">
+      <!-- Channel Header -->
+      <div class="comms-header glass-card">
+        <div class="channel-info">
+          <h2 class="channel-name">The Hub — Secured Link</h2>
+          <p class="channel-desc">Encrypted communication between DAVE and team</p>
+        </div>
+        <div class="channel-stats">
+          <span class="stat-item">
+            <span class="stat-label">Active Agents:</span>
+            <span class="stat-value" id="activeAgentsCount">2</span>
+          </span>
+          <span class="stat-item">
+            <span class="stat-label">Messages:</span>
+            <span class="stat-value" id="messageCount">0</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Messages Feed -->
+      <div class="comms-feed-wrapper">
+        <div class="comms-feed glass-card" id="commsFeed">
+          <!-- Messages populated by JS -->
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="comms-input-wrapper">
+        <form class="comms-input-form glass-card" id="commsInputForm">
+          <input
+            type="text"
+            class="comms-input"
+            id="commsInput"
+            placeholder="Type a message... (Shift+Enter for new line)"
+            maxlength="1000"
+            autocomplete="off"
+          />
+          <div class="input-helpers">
+            <span class="char-count" id="charCount">0/1000</span>
+            <button type="submit" class="btn btn-primary btn-send" aria-label="Send message">
+              <span class="send-icon">⬆</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

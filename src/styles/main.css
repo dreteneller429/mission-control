@@ -22,6 +22,9 @@
 /* 6. Animations & Transitions */
 @import url('./animations.css');
 
+/* 7. Page-Specific: Agents */
+@import url('./agents.css');
+
 /* ====================================================================
    Global Overrides & Fine-tuning
    ==================================================================== */

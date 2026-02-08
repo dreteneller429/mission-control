@@ -1,0 +1,702 @@
+<!-- Cron Jobs Page Component -->
+<main class="cron-jobs-container" id="cronJobsContainer">
+  <!-- Header Section -->
+  <section class="cron-header-section">
+    <div class="section-header-content">
+      <div>
+        <h1 class="page-title">Cron Jobs</h1>
+        <p class="page-subtitle">Scheduled automation tasks</p>
+      </div>
+      <button class="btn btn-primary" id="createJobBtn">+ New Job</button>
+    </div>
+  </section>
+
+  <!-- Cron Jobs List -->
+  <section class="cron-jobs-section">
+    <div class="cron-jobs-list" id="cronJobsList">
+      <!-- Job cards will be populated by JavaScript -->
+      <div class="glass-card cron-job-card" data-job-id="morning-briefing">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Morning Briefing</h3>
+            <p class="job-description">Scan AI news, RE market updates, SureClose pipeline</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every day at 7:00 AM EST</span>
+              <code class="cron-notation">0 7 * * *</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707488400000">in 14h 39m</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">Today at 7:15 AM EST</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+
+      <div class="glass-card cron-job-card" data-job-id="task-summary">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Task Summary</h3>
+            <p class="job-description">Pull tasks, organize by urgency, send morning digest</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every day at 8:00 AM EST</span>
+              <code class="cron-notation">0 8 * * *</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707492000000">in 15h 39m</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">Today at 8:02 AM EST</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+
+      <div class="glass-card cron-job-card" data-job-id="email-check">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Email Check</h3>
+            <p class="job-description">Monitor david@sureclose.ai for new emails</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every 10 minutes</span>
+              <code class="cron-notation">*/10 * * * *</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707386220000">in 3m 20s</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">9 minutes ago</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+
+      <div class="glass-card cron-job-card" data-job-id="dashboard-notes">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Dashboard Notes Check</h3>
+            <p class="job-description">Check if David left notes, process them</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every 5 minutes</span>
+              <code class="cron-notation">*/5 * * * *</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707386100000">in 45s</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">4 minutes ago</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+
+      <div class="glass-card cron-job-card" data-job-id="weekly-swot">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Weekly SWOT</h3>
+            <p class="job-description">Competitor research, opportunity identification</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every Monday at 9:00 AM EST</span>
+              <code class="cron-notation">0 9 * * 1</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707772800000">in 6d 2h 39m</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">Last Monday at 9:05 AM EST</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+
+      <div class="glass-card cron-job-card" data-job-id="security-audit">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h3 class="job-name">Weekly Security Audit</h3>
+            <p class="job-description">Port scan, failed logins, permissions check</p>
+          </div>
+          <div class="job-status-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" class="job-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-label active">Active</span>
+          </div>
+        </div>
+
+        <div class="job-details">
+          <div class="detail-item">
+            <span class="detail-label">Schedule</span>
+            <div class="detail-value">
+              <span class="human-readable">Every Monday at 2:00 PM EST</span>
+              <code class="cron-notation">0 14 * * 1</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Next Run</span>
+            <div class="detail-value">
+              <span class="next-run" data-time="1707787200000">in 6d 7h 39m</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Last Run</span>
+            <div class="detail-value">
+              <span class="last-run">Last Monday at 2:10 PM EST</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
+          <button class="btn btn-danger sm delete-job-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Create/Edit Job Modal -->
+  <div class="modal-overlay" id="jobModalOverlay" style="display: none;">
+    <div class="glass-modal">
+      <div class="modal-header">
+        <h2>Create New Job</h2>
+        <button class="close-btn" id="closeJobModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="jobForm" class="form-group">
+          <div class="form-field">
+            <label class="input-label">Job Name</label>
+            <input type="text" class="input" id="jobName" placeholder="e.g., Daily Report" required>
+          </div>
+
+          <div class="form-field">
+            <label class="input-label">Description</label>
+            <textarea class="input" id="jobDesc" placeholder="What does this job do?" required></textarea>
+          </div>
+
+          <div class="form-field">
+            <label class="input-label">Schedule (Cron Notation)</label>
+            <input type="text" class="input" id="jobCron" placeholder="0 7 * * * (or use presets below)" required>
+            <div class="cron-presets">
+              <button type="button" class="btn btn-ghost sm preset" data-cron="*/5 * * * *">Every 5 min</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="*/10 * * * *">Every 10 min</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 7 * * *">7 AM Daily</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 9 * * 1">9 AM Monday</button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelJobBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Job</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<style>
+.cron-jobs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.cron-header-section {
+  margin-bottom: 40px;
+}
+
+.section-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.page-title {
+  font-size: 44px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cron-jobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cron-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cron-job-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cron-job-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.job-title-section {
+  flex: 1;
+}
+
+.job-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.job-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.job-status-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 999px;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--accent-green, #30D158);
+  border-color: var(--accent-green, #30D158);
+}
+
+.toggle-switch input:checked + .toggle-slider::after {
+  left: calc(100% - 26px);
+}
+
+.status-label {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-label.active {
+  background-color: rgba(48, 209, 88, 0.2);
+  color: #30D158;
+}
+
+.status-label.paused {
+  background-color: rgba(255, 159, 10, 0.2);
+  color: #FF9F0A;
+}
+
+.job-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.detail-value {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-value span {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.detail-value .cron-notation {
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #64B5F6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.next-run {
+  font-weight: 600;
+}
+
+.job-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.job-actions .btn {
+  min-width: 80px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+}
+
+.glass-modal {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(40px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 28px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.input {
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.input:focus {
+  background-color: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.20);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.cron-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.preset {
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.form-actions .btn {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cron-jobs-container {
+    padding: 24px 16px;
+  }
+
+  .section-header-content {
+    flex-direction: column;
+  }
+
+  .page-title {
+    font-size: 32px;
+  }
+
+  .job-header {
+    flex-direction: column;
+  }
+
+  .job-details {
+    grid-template-columns: 1fr;
+  }
+
+  .cron-presets {
+    grid-template-columns: 1fr;
+  }
+
+  .glass-modal {
+    max-width: 90%;
+  }
+}
+</style>
+
+<script src="/src/js/cron-logic.js"></script>
