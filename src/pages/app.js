@@ -6,6 +6,7 @@
 const appState = {
   currentPage: 'dashboard',
   sidebarOpen: window.innerWidth > 768,
+  sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
   statusIndicator: 'online',
   heartbeatCountdown: 12,
 };
@@ -52,6 +53,7 @@ function loadNavigation() {
     .then(response => response.text())
     .then(html => {
       navContainer.innerHTML = html;
+      restoreSidebarState();
       setupSidebarToggle();
       setupMobileMenu();
       setupNavigation();
@@ -70,6 +72,12 @@ function loadDashboard() {
     .then(response => response.text())
     .then(html => {
       dashContainer.innerHTML = html;
+      
+      // Apply collapsed state styling if needed
+      if (appState.sidebarCollapsed) {
+        updateContainerWidths(true);
+      }
+      
       setupStatCardClickHandlers();
       setupQuickLinkHandlers();
       initializeActivityFeed();
@@ -86,14 +94,42 @@ function setupEventListeners() {
   window.addEventListener('resize', () => {
     if (window.innerWidth > 768) {
       const sidebar = document.getElementById('sidebar');
-      if (sidebar) sidebar.classList.remove('open');
+      if (sidebar) {
+        sidebar.classList.remove('open');
+        // Restore collapsed state on desktop
+        if (appState.sidebarCollapsed) {
+          sidebar.classList.add('collapsed');
+        } else {
+          sidebar.classList.remove('collapsed');
+        }
+      }
       appState.sidebarOpen = false;
+    } else {
+      // On mobile, remove collapsed class
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.classList.remove('collapsed');
+      }
     }
   });
 }
 
 // ====================================================================
-// Sidebar Toggle (Mobile)
+// Restore Sidebar State from localStorage
+// ====================================================================
+
+function restoreSidebarState() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+
+  if (appState.sidebarCollapsed) {
+    sidebar.classList.add('collapsed');
+    updateContainerWidths(true);
+  }
+}
+
+// ====================================================================
+// Sidebar Toggle (Collapse/Expand & Mobile Menu)
 // ====================================================================
 
 function setupSidebarToggle() {
@@ -101,12 +137,27 @@ function setupSidebarToggle() {
   const sidebar = document.getElementById('sidebar');
 
   if (toggle && sidebar) {
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      appState.sidebarOpen = sidebar.classList.contains('open');
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      // On mobile (width <= 768px): toggle menu open/close
+      if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('open');
+        appState.sidebarOpen = sidebar.classList.contains('open');
+      } else {
+        // On desktop (width > 768px): toggle collapse/expand
+        sidebar.classList.toggle('collapsed');
+        appState.sidebarCollapsed = sidebar.classList.contains('collapsed');
+        
+        // Save state to localStorage
+        localStorage.setItem('sidebarCollapsed', appState.sidebarCollapsed);
+        
+        // Update container widths
+        updateContainerWidths(appState.sidebarCollapsed);
+      }
     });
 
-    // Close sidebar when clicking outside
+    // Close sidebar when clicking outside (mobile only)
     document.addEventListener('click', (e) => {
       if (appState.sidebarOpen && 
           !sidebar.contains(e.target) && 
@@ -117,6 +168,27 @@ function setupSidebarToggle() {
       }
     });
   }
+}
+
+// ====================================================================
+// Update Container Widths Based on Sidebar State
+// ====================================================================
+
+function updateContainerWidths(isCollapsed) {
+  const containers = document.querySelectorAll(
+    '.dashboard-container, .documents-container, .journal-container, ' +
+    '.intelligence-container, .agents-container, .clients-container, ' +
+    '.cron-jobs-container, .api-usage-container, .docudigest-container, ' +
+    '.weekly-recaps-container, .workshop-page'
+  );
+
+  containers.forEach(container => {
+    if (isCollapsed) {
+      container.classList.add('sidebar-collapsed');
+    } else {
+      container.classList.remove('sidebar-collapsed');
+    }
+  });
 }
 
 // ====================================================================
@@ -205,6 +277,11 @@ function loadPage(page) {
     .then(response => response.text())
     .then(html => {
       dashContainer.innerHTML = html;
+      
+      // Apply collapsed state styling if needed
+      if (appState.sidebarCollapsed) {
+        updateContainerWidths(true);
+      }
       
       // Initialize page-specific logic based on page name
       switch(page) {

@@ -32,19 +32,77 @@
   padding: 24px 0;
   z-index: 100;
   overflow-y: auto;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 
     inset 1px 0 0 rgba(255, 255, 255, 0.08),
     0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.sidebar-toggle {
-  display: none;
-  position: fixed;
-  top: 16px;
-  left: 16px;
+/* Collapsed sidebar state */
+.sidebar.collapsed {
+  width: 60px;
+  padding: 16px 0;
+}
+
+.sidebar.collapsed .sidebar-avatar-section {
+  padding: 0 8px 16px 8px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.sidebar.collapsed .avatar {
   width: 44px;
   height: 44px;
+  margin: 0 auto;
+}
+
+.sidebar.collapsed .avatar-initials {
+  font-size: 18px;
+}
+
+.sidebar.collapsed .status-area,
+.sidebar.collapsed .sidebar-nav .nav-label,
+.sidebar.collapsed .recent-documents,
+.sidebar.collapsed .user-profile .profile-info {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-nav {
+  padding: 0 4px;
+}
+
+.sidebar.collapsed .nav-link {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px auto;
+  border-radius: var(--radius-sm);
+}
+
+.sidebar.collapsed .nav-link .nav-icon {
+  margin: 0;
+  font-size: 20px;
+}
+
+.sidebar.collapsed .user-profile {
+  padding: 8px 4px;
+  justify-content: center;
+}
+
+.sidebar.collapsed .profile-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 16px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
   background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-sm);
@@ -53,6 +111,11 @@
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   backdrop-filter: var(--blur-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .sidebar-toggle:hover {
@@ -63,18 +126,25 @@
 
 .sidebar-toggle span {
   display: block;
-  width: 20px;
+  width: 18px;
   height: 2px;
   background: var(--text-primary);
-  margin: 6px auto;
+  margin: 3px auto;
   border-radius: 1px;
   transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  left: 10px;
 }
 
 /* Sidebar Avatar Section */
 .sidebar-avatar-section {
   padding: 0 20px 24px 20px;
   border-bottom: 1px solid var(--border-glass);
+  position: relative;
+  padding-top: 56px;
+  transition: padding 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .avatar-container {
@@ -407,7 +477,7 @@
 .workshop-page {
   margin-left: 280px;
   width: calc(100% - 280px);
-  padding: 32px;
+  padding: 14px;
   overflow-y: auto;
   overflow-x: hidden;
   animation: fadeIn 0.5s ease;
@@ -417,6 +487,24 @@
   margin-top: 0;
   margin-right: 0;
   margin-bottom: 0;
+  transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* When sidebar is collapsed on desktop */
+.dashboard-container.sidebar-collapsed,
+.documents-container.sidebar-collapsed,
+.journal-container.sidebar-collapsed,
+.intelligence-container.sidebar-collapsed,
+.agents-container.sidebar-collapsed,
+.clients-container.sidebar-collapsed,
+.cron-jobs-container.sidebar-collapsed,
+.api-usage-container.sidebar-collapsed,
+.docudigest-container.sidebar-collapsed,
+.weekly-recaps-container.sidebar-collapsed,
+.workshop-page.sidebar-collapsed {
+  margin-left: 60px;
+  width: calc(100% - 60px);
 }
 
 .dashboard-section {
@@ -876,6 +964,10 @@
     width: 240px;
   }
 
+  .sidebar.collapsed {
+    width: 60px;
+  }
+
   .dashboard-container,
   .documents-container,
   .journal-container,
@@ -889,8 +981,23 @@
   .workshop-page {
     width: calc(100% - 240px) !important;
     margin-left: 240px !important;
-    padding: 24px !important;
+    padding: 12px !important;
     max-width: 100% !important;
+  }
+
+  .dashboard-container.sidebar-collapsed,
+  .documents-container.sidebar-collapsed,
+  .journal-container.sidebar-collapsed,
+  .intelligence-container.sidebar-collapsed,
+  .agents-container.sidebar-collapsed,
+  .clients-container.sidebar-collapsed,
+  .cron-jobs-container.sidebar-collapsed,
+  .api-usage-container.sidebar-collapsed,
+  .docudigest-container.sidebar-collapsed,
+  .weekly-recaps-container.sidebar-collapsed,
+  .workshop-page.sidebar-collapsed {
+    width: calc(100% - 60px) !important;
+    margin-left: 60px !important;
   }
 
   .stat-cards-grid {
@@ -924,11 +1031,13 @@
     transform: translateX(0);
   }
 
+  .sidebar.collapsed {
+    transform: translateX(0);
+    width: 60px;
+  }
+
   .sidebar-toggle {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: fixed;
   }
 
   .dashboard-container,
