@@ -489,7 +489,7 @@
 .docudigest-container,
 .weekly-recaps-container,
 .workshop-page {
-  width: 100%;
+  width: calc(100% - 280px);
   margin-left: 280px;
   padding: 8px;
   overflow-y: auto;
@@ -500,7 +500,7 @@
   margin-top: 0;
   margin-right: 0;
   margin-bottom: 0;
-  transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* When sidebar is collapsed on desktop */
@@ -516,6 +516,7 @@
 .weekly-recaps-container.sidebar-collapsed,
 .workshop-page.sidebar-collapsed {
   margin-left: 88px;
+  width: calc(100% - 88px);
 }
 
 .dashboard-section {
@@ -990,7 +991,7 @@
   .docudigest-container,
   .weekly-recaps-container,
   .workshop-page {
-    width: 100% !important;
+    width: calc(100% - 240px) !important;
     margin-left: 240px !important;
     padding: 12px !important;
   }
@@ -1006,7 +1007,8 @@
   .docudigest-container.sidebar-collapsed,
   .weekly-recaps-container.sidebar-collapsed,
   .workshop-page.sidebar-collapsed {
-    margin-left: 115px !important;
+    margin-left: 88px !important;
+    width: calc(100% - 88px) !important;
   }
 
   .stat-cards-grid {
