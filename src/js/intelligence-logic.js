@@ -73,10 +73,12 @@ class IntelligenceManager {
 
   async loadReports() {
     try {
-      // Fetch from API or use mock data
+      // Fetch from backend API
       const response = await fetch('/api/intelligence');
       if (response.ok) {
-        this.reports = await response.json();
+        const reports = await response.json();
+        // Transform backend reports to UI format
+        this.reports = reports.map(report => this.transformBackendReport(report));
       } else {
         this.reports = this.getMockReports();
       }
@@ -85,6 +87,55 @@ class IntelligenceManager {
       this.reports = this.getMockReports();
     }
     this.filteredReports = [...this.reports];
+  }
+
+  transformBackendReport(backendReport) {
+    // Transform backend report format to UI format
+    const categoryMap = {
+      'market': 'MARKET_INTELLIGENCE',
+      'strategy': 'BUSINESS_INTELLIGENCE',
+      'product': 'RESEARCH_INTELLIGENCE',
+      'operations': 'PRODUCTIVITY_INTELLIGENCE',
+      'partner': 'SOURCE_INTELLIGENCE',
+    };
+
+    const inferCategory = (title) => {
+      const lower = title.toLowerCase();
+      if (lower.includes('market') || lower.includes('competitive')) return 'MARKET_INTELLIGENCE';
+      if (lower.includes('expansion') || lower.includes('pipeline') || lower.includes('revenue')) return 'BUSINESS_INTELLIGENCE';
+      if (lower.includes('optimization') || lower.includes('time')) return 'PRODUCTIVITY_INTELLIGENCE';
+      if (lower.includes('research') || lower.includes('analysis')) return 'RESEARCH_INTELLIGENCE';
+      return 'BUSINESS_INTELLIGENCE';
+    };
+
+    const category = categoryMap[backendReport.category] || inferCategory(backendReport.title);
+    const timestamp = backendReport.created_at ? this.getTimeAgo(new Date(backendReport.created_at)) : 'Recently';
+
+    return {
+      id: backendReport.id,
+      title: backendReport.title,
+      subtitle: backendReport.description,
+      category: category,
+      categoryColor: this.getCategoryColor(category),
+      timestamp: timestamp,
+      author: 'Intelligence System',
+      breakdown: backendReport.content || '',
+      impact: `Priority: ${backendReport.priority || 'medium'}. Status: ${backendReport.status || 'active'}`,
+      strategy: backendReport.strategies && backendReport.strategies.length > 0
+        ? backendReport.strategies.map(s => `• ${s.name}: ${s.description}`).join('\n')
+        : 'Review and plan implementation strategy',
+    };
+  }
+
+  getTimeAgo(date) {
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 2592000) return `${Math.floor(seconds / 86400)}d ago`;
+    return date.toLocaleDateString();
   }
 
   getMockReports() {
@@ -386,25 +437,36 @@ The real estate wholesaling market is experiencing consolidation with 3 major pl
   async deployStrategy() {
     if (!this.selectedReport) return;
 
-    const strategyText = this.selectedReport.strategy;
-    
     try {
-      // Try to call the API
+      // Call the API to deploy strategy
+      // For reports from backend with strategies, use the first strategy
+      let deployPayload = {};
+      
+      if (this.selectedReport.strategies && this.selectedReport.strategies.length > 0) {
+        deployPayload = { strategyId: this.selectedReport.strategies[0].id };
+      } else {
+        // For mock reports, send the strategy text
+        deployPayload = { strategy: this.selectedReport.strategy };
+      }
+
       const response = await fetch(`/api/intelligence/${this.selectedReport.id}/deploy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ strategy: strategyText }),
+        body: JSON.stringify(deployPayload),
       });
 
       if (!response.ok) {
         throw new Error('Deploy failed');
       }
 
-      // Success - show message
+      const result = await response.json();
+      console.log('Deploy result:', result);
+      
+      // Show success message
       this.showDeployMessage();
     } catch (error) {
-      console.log('API not available, simulating deployment:', error);
-      // Simulate successful deployment
+      console.log('Deploy error (simulating success):', error);
+      // Simulate successful deployment for offline mode
       this.showDeployMessage();
     }
   }

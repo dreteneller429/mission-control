@@ -1,13 +1,24 @@
 const express = require('express');
+const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const storage = require('../db/storage');
-
-const router = express.Router();
 
 // Initialize collection
 storage.initCollection('journal', []);
 
-// GET /api/journal/:date - Get daily entry
+// Get journal entries from memory files and storage
+router.get('/', (req, res) => {
+  try {
+    const entries = storage.findAll('journal');
+    res.json(entries);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single journal entry by date
 router.get('/:date', (req, res) => {
   try {
     const { date } = req.params;
@@ -21,7 +32,23 @@ router.get('/:date', (req, res) => {
     let entry = allEntries.find(e => e.date === date);
 
     if (!entry) {
-      // Create empty entry if doesn't exist
+      // Check memory files as fallback
+      const memoryDir = process.env.MEMORY_PATH || '/home/clawd/.openclaw/workspace/memory';
+      const filename = `${date}.md`;
+      const filePath = path.join(memoryDir, filename);
+
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        return res.json({
+          id: filename,
+          date,
+          filename,
+          content,
+          created_at: new Date(date).toISOString()
+        });
+      }
+
+      // Return empty entry if not found
       entry = {
         id: uuidv4(),
         date,
@@ -36,7 +63,7 @@ router.get('/:date', (req, res) => {
   }
 });
 
-// POST /api/journal/:date - Add entry to date
+// Add entry to date
 router.post('/:date', (req, res) => {
   try {
     const { date } = req.params;

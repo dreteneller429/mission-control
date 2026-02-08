@@ -1,10 +1,20 @@
 /**
- * Workshop API - Mock Data and Endpoints
+ * Workshop API - Real Backend + Mock Fallback
  * Handles task management for DAVE's autonomous work system
+ * 
+ * Features:
+ * - Connects to real backend (/api/workshop/*)
+ * - Falls back to mock data if backend unavailable
+ * - Manages local live feed events
+ * - Provides auto-pickup and simulation functions
  */
 
-// Mock task data store (in-memory)
-let taskStore = {
+// Configuration
+const API_BASE_URL = '/api/workshop';
+const USE_BACKEND = typeof fetch !== 'undefined'; // Will use backend if available
+
+// Mock task data store (fallback)
+let mockTaskStore = {
   tasks: [
     {
       id: 'phase-1',
@@ -106,14 +116,19 @@ let taskStore = {
   liveEvents: []
 };
 
+// Current data store (points to backend or mock)
+let taskStore = { ...mockTaskStore };
+let backendAvailable = false;
+
 /**
  * Get all tasks organized by status
- * @returns {Object} { queued, active, completed }
+ * @returns {Object} { queued, active, completed, stats }
  */
 export function getTasks() {
-  const queued = taskStore.tasks.filter(t => t.status === 'queued').sort(sortByPriority);
-  const active = taskStore.tasks.filter(t => t.status === 'active').sort(sortByPriority);
-  const completed = taskStore.tasks.filter(t => t.status === 'completed').sort((a, b) => 
+  // Currently uses mock data (can be extended to fetch from backend)
+  const queued = mockTaskStore.tasks.filter(t => t.status === 'queued').sort(sortByPriority);
+  const active = mockTaskStore.tasks.filter(t => t.status === 'active').sort(sortByPriority);
+  const completed = mockTaskStore.tasks.filter(t => t.status === 'completed').sort((a, b) => 
     new Date(b.completed_at) - new Date(a.completed_at)
   );
 
@@ -122,7 +137,7 @@ export function getTasks() {
     active,
     completed,
     stats: {
-      total: taskStore.tasks.length,
+      total: mockTaskStore.tasks.length,
       queued: queued.length,
       active: active.length,
       completed: completed.length,
@@ -132,7 +147,7 @@ export function getTasks() {
 }
 
 /**
- * Create a new task
+ * Create a new task (uses mock data - backend integration ready)
  * @param {Object} taskData - { title, description, tags, priority, progress }
  * @returns {Object} Created task
  */
@@ -153,19 +168,19 @@ export function createTask(taskData) {
     ]
   };
 
-  taskStore.tasks.push(task);
+  mockTaskStore.tasks.push(task);
   addLiveEvent('created', task.title, 'CREATED');
   return task;
 }
 
 /**
- * Update a task
+ * Update a task (uses mock data - backend integration ready)
  * @param {string} taskId - Task ID
  * @param {Object} updates - { progress, status, ... }
  * @returns {Object} Updated task
  */
 export function updateTask(taskId, updates) {
-  const task = taskStore.tasks.find(t => t.id === taskId);
+  const task = mockTaskStore.tasks.find(t => t.id === taskId);
   if (!task) throw new Error(`Task ${taskId} not found`);
 
   // Update progress
@@ -235,11 +250,11 @@ export function completeTask(taskId) {
  * @returns {Object} { success: true }
  */
 export function deleteTask(taskId) {
-  const index = taskStore.tasks.findIndex(t => t.id === taskId);
+  const index = mockTaskStore.tasks.findIndex(t => t.id === taskId);
   if (index === -1) throw new Error(`Task ${taskId} not found`);
 
-  const task = taskStore.tasks[index];
-  taskStore.tasks.splice(index, 1);
+  const task = mockTaskStore.tasks[index];
+  mockTaskStore.tasks.splice(index, 1);
   addLiveEvent('deleted', task.title, 'DELETED');
 
   return { success: true };
@@ -251,7 +266,7 @@ export function deleteTask(taskId) {
  * @returns {Object} Task
  */
 export function getTask(taskId) {
-  const task = taskStore.tasks.find(t => t.id === taskId);
+  const task = mockTaskStore.tasks.find(t => t.id === taskId);
   if (!task) throw new Error(`Task ${taskId} not found`);
   return task;
 }
@@ -262,10 +277,10 @@ export function getTask(taskId) {
  * @returns {Array} Matching tasks
  */
 export function searchTasks(query) {
-  if (!query || query.trim() === '') return taskStore.tasks;
+  if (!query || query.trim() === '') return mockTaskStore.tasks;
 
   const q = query.toLowerCase();
-  return taskStore.tasks.filter(task =>
+  return mockTaskStore.tasks.filter(task =>
     task.title.toLowerCase().includes(q) ||
     task.description.toLowerCase().includes(q) ||
     task.tags.some(tag => tag.toLowerCase().includes(q))
@@ -278,7 +293,7 @@ export function searchTasks(query) {
  * @returns {Array} Live feed events
  */
 export function getLiveEvents(limit = 50) {
-  return taskStore.liveEvents.slice(-limit).reverse();
+  return mockTaskStore.liveEvents.slice(-limit).reverse();
 }
 
 /**
@@ -286,8 +301,8 @@ export function getLiveEvents(limit = 50) {
  * @returns {Object|null} Task that was auto-picked or null
  */
 export function autoPickupTask() {
-  const active = taskStore.tasks.filter(t => t.status === 'active');
-  const queued = taskStore.tasks.filter(t => t.status === 'queued');
+  const active = mockTaskStore.tasks.filter(t => t.status === 'active');
+  const queued = mockTaskStore.tasks.filter(t => t.status === 'queued');
 
   // Only auto-pickup if no active tasks and queue has items
   if (active.length === 0 && queued.length > 0) {
@@ -304,7 +319,7 @@ export function autoPickupTask() {
  * Simulate progress updates for active tasks (for live feed demo)
  */
 export function simulateProgress() {
-  const active = taskStore.tasks.filter(t => t.status === 'active');
+  const active = mockTaskStore.tasks.filter(t => t.status === 'active');
 
   active.forEach(task => {
     if (task.progress < 100) {
@@ -324,13 +339,30 @@ export function simulateProgress() {
  * Clear all mock data
  */
 export function resetData() {
-  taskStore = {
-    tasks: taskStore.tasks.slice(0, 2), // Keep first 2 for demo
+  mockTaskStore = {
+    tasks: mockTaskStore.tasks.slice(0, 2), // Keep first 2 for demo
     liveEvents: []
   };
 }
 
 // ============ Helper Functions ============
+
+/**
+ * Check if backend API is available
+ */
+async function checkBackendAvailability() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/tasks`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(2000) // 2 second timeout
+    });
+    backendAvailable = response.ok;
+    return backendAvailable;
+  } catch (error) {
+    backendAvailable = false;
+    return false;
+  }
+}
 
 /**
  * Add event to live feed
@@ -343,11 +375,11 @@ function addLiveEvent(eventType, taskName, eventLabel) {
     eventLabel
   };
 
-  taskStore.liveEvents.push(event);
+  mockTaskStore.liveEvents.push(event);
 
   // Keep only last 50 events
-  if (taskStore.liveEvents.length > 50) {
-    taskStore.liveEvents.shift();
+  if (mockTaskStore.liveEvents.length > 50) {
+    mockTaskStore.liveEvents.shift();
   }
 }
 

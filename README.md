@@ -1,372 +1,417 @@
-# iOS Liquid Glass Design System
-## Mission Control V4 - Complete CSS Framework
+# Mission Control V4 - Backend REST API
 
-A production-ready, glassmorphism-based CSS design system with iOS-inspired aesthetics. Pure CSS, no dependencies, fully responsive, and accessibility-compliant.
+Complete backend REST API for Mission Control V4. A comprehensive system for managing tasks, intelligence reports, cron jobs, API usage tracking, agents, communications, documents, journal entries, clients, and weekly recaps.
 
----
+## Quick Start
 
-## 📦 What's Included
-
-### CSS Framework (2,735 lines, 80KB)
-- **reset.css** (188 lines) - CSS reset & HTML5 defaults
-- **theme.css** (153 lines) - Color palette & design tokens
-- **glass.css** (496 lines) - Glassmorphism effects & utilities
-- **layout.css** (532 lines) - 12-column grid & typography
-- **components.css** (729 lines) - UI components (buttons, cards, inputs, etc.)
-- **animations.css** (553 lines) - 29 keyframe animations & transitions
-- **main.css** (84 lines) - Master import file
-
-### Interactive Demo
-- **demo.html** - Complete showcase with 150+ component examples
-- Demonstrates all glass effects, buttons, cards, inputs, badges, animations
-- Responsive grid system demonstration
-- Color palette swatches with hex codes
-
-### Documentation
-- **DESIGN_SYSTEM.md** - Complete technical documentation (13KB)
-- **QUICK_START.md** - Quick reference guide (8KB)
-- **README.md** - This file
-
----
-
-## 🎨 Key Features
-
-✅ **Glassmorphism Design**
-- backdrop-filter blur (40px on main effects)
-- Semi-transparent backgrounds with proper opacity layering
-- Inset white line edge lighting for depth
-- Specular highlights with animated shine
-- Gradient borders (no hard 1px solid borders)
-- Scale animations on interaction
-
-✅ **Perfect Color Palette**
-- Deep dark background (#0a0e1a)
-- Six iOS System accent colors (Blue, Green, Orange, Red, Purple, Teal)
-- Glass layers at 6%, 10%, 14% opacity
-- Consistent text hierarchy (100%, 60%, 35%)
-
-✅ **Responsive Grid System**
-- 12-column flexbox layout
-- Mobile-first approach
-- 4 responsive breakpoints (640px, 768px, 1024px, 1280px, 1536px)
-- Fluid typography on mobile
-
-✅ **Complete UI Components**
-- Buttons (4 variants, 4 sizes)
-- Cards (with headers/footers)
-- Form inputs (with error states)
-- Badges & tags (6 color variants)
-- Navigation (vertical & horizontal)
-- Modals (with overlay)
-- Alerts (4 types)
-- Status indicators
-- Dropdowns
-
-✅ **Rich Animation Library**
-- 29 keyframe animations
-- Fade, slide, scale, bounce, pulse, spin, glow effects
-- Smooth transitions with proper easing
-- Respects prefers-reduced-motion
-
-✅ **Accessibility**
-- High contrast mode support
-- Reduced motion media query compliance
-- Semantic HTML5 defaults
-- Proper focus states
-- WCAG 2.1 AA compliant
-
-✅ **Zero Dependencies**
-- Pure CSS (no preprocessors)
-- No CSS frameworks
-- No JavaScript
-- No external libraries
-
----
-
-## 🚀 Quick Start
-
-### View the Demo
+### Installation
 ```bash
-cd /home/clawd/.openclaw/workspace/mission-control
-python3 -m http.server 8000
-# Open: http://localhost:8000/public/demo.html
+cd mission-control
+npm install
 ```
 
-### Import in Your Project
-```html
-<link rel="stylesheet" href="path/to/src/styles/main.css">
+### Running the Server
+```bash
+npm start
 ```
 
-### Use Components
-```html
-<!-- Glass Card -->
-<div class="glass-card">
-  <h3>Title</h3>
-  <p>Content</p>
-</div>
+The API will be available at `http://localhost:3000`
 
-<!-- Button -->
-<button class="btn btn-primary lg">Click Me</button>
-
-<!-- Input -->
-<input type="text" class="input" placeholder="Enter text...">
-
-<!-- Responsive Grid -->
-<div class="container">
-  <div class="row">
-    <div class="col-12 col-md-6 col-lg-4">Responsive</div>
-  </div>
-</div>
+### Testing All Endpoints
+```bash
+./test-api.sh
 ```
 
----
+## API Architecture
 
-## 📐 Design Tokens
+### Technology Stack
+- **Framework:** Express.js (Node.js)
+- **Database:** JSON file-based storage (lightweight, no external dependencies)
+- **Port:** 3000 (default)
+- **Data Location:** `/server/db/data/`
 
-### Colors
-```css
---bg-deep: #0a0e1a;                    /* Deep background */
---bg-glass: rgba(255, 255, 255, 0.06); /* Glass surface */
---accent-blue: #007AFF;
---accent-green: #30D158;
---accent-orange: #FF9F0A;
---accent-red: #FF453A;
---accent-purple: #BF5AF2;
---accent-teal: #64D2FF;
-```
-
-### Sizing
-```css
---radius-sm: 12px;      /* Buttons */
---radius-md: 16px;      /* Inputs */
---radius-lg: 20px;      /* Cards */
---radius-pill: 999px;   /* Badges */
-```
-
-### Timing
-```css
---duration-fast: 0.15s;
---duration-normal: 0.3s;
---duration-slow: 0.5s;
---ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-```
-
----
-
-## 📁 File Structure
+### Directory Structure
 ```
 mission-control/
-├── src/styles/
-│   ├── main.css              ← Import this
-│   ├── reset.css
-│   ├── theme.css
-│   ├── glass.css
-│   ├── layout.css
-│   ├── components.css
-│   └── animations.css
-├── public/
-│   └── demo.html             ← See all components
-├── DESIGN_SYSTEM.md          ← Full docs
-├── QUICK_START.md            ← Quick reference
-└── README.md                 ← You are here
+├── server/
+│   ├── app.js                 # Main Express application
+│   ├── middleware/
+│   │   ├── cors.js           # CORS configuration
+│   │   └── logging.js        # Request/response logging
+│   ├── routes/
+│   │   ├── workshop.js       # Task management
+│   │   ├── intelligence.js   # Intelligence reports
+│   │   ├── cron.js          # Cron job scheduling
+│   │   ├── api-usage.js     # API usage tracking
+│   │   ├── agents.js        # Agent management
+│   │   ├── comms.js         # Communications/messaging
+│   │   ├── documents.js     # Document storage
+│   │   ├── journal.js       # Journal entries
+│   │   ├── clients.js       # Client management
+│   │   ├── weekly-recaps.js # Weekly summaries
+│   │   └── dashboard.js     # Dashboard stats & activity
+│   └── db/
+│       └── storage.js        # Storage abstraction layer
+├── package.json
+└── README.md
 ```
 
----
+## API Endpoints
 
-## 📊 Statistics
+### Health Check
+- `GET /health` - Server health status
 
-| Metric | Value |
-|--------|-------|
-| Total CSS Lines | 2,735 |
-| Total CSS Size | 80KB |
-| CSS Classes | 324 |
-| CSS Variables | 52 |
-| Keyframe Animations | 29 |
-| Components | 15+ |
-| Demo Examples | 150+ |
-| Browser Support | Chrome 80+, Firefox 75+, Safari 13+, Edge 80+ |
+### Workshop Tasks
+- `GET /api/workshop/tasks` - List all tasks
+- `POST /api/workshop/tasks` - Create new task
+- `GET /api/workshop/tasks/:id` - Get specific task
+- `PUT /api/workshop/tasks/:id` - Update task
+- `DELETE /api/workshop/tasks/:id` - Delete task
+- `POST /api/workshop/tasks/:id/start` - Move task to Active
+- `POST /api/workshop/tasks/:id/complete` - Mark task as Completed
 
----
+### Intelligence Reports
+- `GET /api/intelligence` - List all reports
+- `POST /api/intelligence` - Create new report
+- `GET /api/intelligence/:id` - Get specific report
+- `PUT /api/intelligence/:id` - Update report
+- `POST /api/intelligence/:id/deploy` - Deploy strategy (creates workshop task)
 
-## ✨ Highlights
+### Cron Jobs
+- `GET /api/cron` - List all cron jobs
+- `POST /api/cron` - Create new cron job
+- `PUT /api/cron/:id` - Update cron job
+- `DELETE /api/cron/:id` - Delete cron job
+- `POST /api/cron/:id/run` - Trigger job immediately
 
-### Glassmorphism Implementation
-- Pure CSS backdrop-filter (no image overlays)
-- Multi-layered depth effects
-- Edge lighting with inset white lines
-- Specular highlights with shine animation
-- Gradient borders (never hard 1px solid)
+### API Usage Tracking
+- `GET /api-usage/today` - Today's spending
+- `GET /api-usage/history` - Last 30 days history
+- `GET /api-usage/breakdown` - Breakdown by model/service
+- `GET /api-usage/metrics` - Comprehensive metrics
+- `GET /api-usage/recent` - Recent API calls
+- `POST /api-usage/log` - Log new API call
 
-### Layout System
-- SF Pro Display font stack (iOS native)
-- 7-level heading hierarchy
-- Proper typography scales
-- Mobile-first responsive design
-- Flexible spacing system (4px increments)
+### Agents
+- `GET /api/agents` - List all agents
+- `GET /api/agents/:id` - Get agent details
+- `PUT /api/agents/:id` - Update agent status/task
 
-### Component Library
-- All interactive elements have proper states
-- Hover, active, focus, disabled states
-- Smooth transitions on all interactions
-- Keyboard accessible
-- Touch-friendly sizing (min 44px for touch targets)
+### Communications
+- `GET /api/comms/messages` - Get message history
+- `POST /api/comms/messages` - Send new message
 
-### Animation Suite
-```
-fadeIn/Out, slideIn/Out, scaleIn/Out, bounce
-pulse, pulseScale, spin, glow, swing, wiggle
-ring, shimmer, and more...
-```
+### Documents
+- `GET /api/documents` - List all documents
+- `POST /api/documents` - Create new document
+- `GET /api/documents/:id` - Get specific document
+- `DELETE /api/documents/:id` - Delete document
 
----
+### Journal
+- `GET /api/journal/:date` - Get entries for specific date (YYYY-MM-DD)
+- `POST /api/journal/:date` - Add entry to specific date
 
-## 🛠️ Customization
+### Clients
+- `GET /api/clients` - List all clients
+- `POST /api/clients` - Create new client
+- `GET /api/clients/:id` - Get client details
+- `PUT /api/clients/:id` - Update client
+- `DELETE /api/clients/:id` - Delete client
 
-### Add Custom Color
-```css
-.my-glass {
-  background: linear-gradient(135deg,
-    rgba(YOUR_R, YOUR_G, YOUR_B, 0.08),
-    var(--bg-glass));
-  border-color: rgba(YOUR_R, YOUR_G, YOUR_B, 0.2);
+### Weekly Recaps
+- `GET /api/weekly-recaps` - List all recaps
+- `GET /api/weekly-recaps/:week` - Get specific week summary
+- `POST /api/weekly-recaps` - Create new recap
+- `PUT /api/weekly-recaps/:week` - Update recap
+
+### Dashboard
+- `GET /api/dashboard/stats` - Dashboard statistics
+- `GET /api/dashboard/activity` - Activity feed
+- `GET /api/dashboard/commits` - Git commits history
+
+## Data Models
+
+### Task
+```json
+{
+  "id": "uuid",
+  "title": "string",
+  "description": "string",
+  "tags": ["string"],
+  "priority": "high|medium|low",
+  "progress": 0-100,
+  "status": "pending|active|completed",
+  "created_at": "ISO8601",
+  "started_at": "ISO8601 or null",
+  "completed_at": "ISO8601 or null",
+  "activity_log": [
+    {
+      "timestamp": "ISO8601",
+      "action": "string",
+      "user": "string"
+    }
+  ]
 }
 ```
 
-### Create New Component
-```css
-.my-component {
-  background: var(--bg-glass);
-  backdrop-filter: var(--blur-lg);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  transition: all var(--duration-normal) var(--ease-smooth);
+### Intelligence Report
+```json
+{
+  "id": "uuid",
+  "title": "string",
+  "category": "string",
+  "content": "string",
+  "impact_summary": "string",
+  "strategy_summary": "string",
+  "created_at": "ISO8601",
+  "source": "string",
+  "deployed": boolean
 }
 ```
 
----
+### Cron Job
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "description": "string",
+  "schedule": "cron expression",
+  "next_run": "ISO8601",
+  "last_run": "ISO8601 or null",
+  "status": "active|inactive"
+}
+```
 
-## 📚 Documentation
+### Agent
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "role": "string",
+  "status": "active|inactive",
+  "current_task": "string",
+  "avatar": "emoji"
+}
+```
 
-- **[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)** - Complete technical documentation with all classes, properties, and implementation details
-- **[QUICK_START.md](QUICK_START.md)** - Quick reference guide with common patterns and code snippets
+### Message
+```json
+{
+  "id": "uuid",
+  "timestamp": "ISO8601",
+  "sender_id": "string",
+  "sender_name": "string",
+  "message_text": "string",
+  "avatar": "emoji"
+}
+```
 
----
+### Document
+```json
+{
+  "id": "uuid",
+  "title": "string",
+  "date": "ISO8601",
+  "category": "string",
+  "content": "string"
+}
+```
 
-## 🎯 Use Cases
+### Client
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "company": "string",
+  "status": "active|inactive",
+  "mrr": number,
+  "last_activity": "ISO8601",
+  "next_action": "string"
+}
+```
 
-Perfect for:
-- ✅ Modern web applications
-- ✅ Dashboard interfaces
-- ✅ SaaS products
-- ✅ Productivity tools
-- ✅ Design systems
-- ✅ Component libraries
-- ✅ iOS-inspired web apps
+### Weekly Recap
+```json
+{
+  "id": "uuid",
+  "week": "YYYY-Www",
+  "start_date": "ISO8601",
+  "end_date": "ISO8601",
+  "summary": "string",
+  "metrics": {
+    "tasks_completed": number,
+    "tasks_created": number,
+    "focus_time_hours": number,
+    "intelligence_deployed": number
+  }
+}
+```
 
----
+## CORS Configuration
 
-## 🔧 Browser Support
+The API allows requests from:
+- `http://localhost:8081` (Frontend development)
+- `http://localhost:3000` (Local testing)
+- `http://127.0.0.1:*` (Local loopback)
+- `http://76.13.119.105:8080` (Production)
 
-| Browser | Version | Support |
-|---------|---------|---------|
-| Chrome | 80+ | ✅ Full |
-| Firefox | 75+ | ✅ Full |
-| Safari | 13+ | ✅ Full |
-| Edge | 80+ | ✅ Full |
-| Mobile Safari | 13+ | ✅ Full |
-| Chrome Mobile | Latest | ✅ Full |
+## Error Handling
 
-**Required Features:**
-- CSS Custom Properties (variables)
-- CSS Grid & Flexbox
-- CSS backdrop-filter
-- CSS @supports (for fallbacks)
+All errors follow this format:
+```json
+{
+  "error": "Error message description"
+}
+```
 
----
+HTTP Status Codes:
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request
+- `404` - Not Found
+- `500` - Internal Server Error
 
-## ♿ Accessibility
+## Logging
 
-- ✅ High contrast mode support (`prefers-contrast: more`)
-- ✅ Reduced motion support (`prefers-reduced-motion: reduce`)
-- ✅ WCAG 2.1 AA color contrast
-- ✅ Semantic HTML defaults
-- ✅ Proper focus states (3px blue outline)
-- ✅ Touch-friendly sizes (min 44px)
-- ✅ Keyboard navigation support
+All requests and responses are logged with:
+- Timestamp
+- HTTP Method
+- Request Path
+- Response Status Code
+- Response Time (milliseconds)
 
----
-
-## 📝 Version
-
-**v1.0** - Initial release for Mission Control V4
-**Build Date:** February 2024
-**License:** Internal use - Mission Control project
-
----
-
-## 🎓 Learning Resources
-
-1. **View the demo** - See all components in action
-2. **Read DESIGN_SYSTEM.md** - Understand the architecture
-3. **Check QUICK_START.md** - Get common code snippets
-4. **Inspect CSS files** - All well-commented and self-documenting
-
----
-
-## 💡 Tips
-
-- Use CSS variables for consistency
-- Leverage the grid system for layouts
-- Combine component classes for flexibility
-- Animations can be disabled with `prefers-reduced-motion`
-- All colors support both dark and light mode
-- Responsive utilities work on all breakpoints
-
----
-
-## ❓ FAQ
-
-**Q: Can I use this with React/Vue/Angular?**
-A: Yes! It's just CSS. Import the main.css file and use the classes in your components.
-
-**Q: How do I customize colors?**
-A: Override CSS variables in your own stylesheet, or modify theme.css directly.
-
-**Q: Do I need to buy fonts?**
-A: No, the SF Pro Display font stack falls back to system fonts available on all devices.
-
-**Q: Can I use this commercially?**
-A: Check with your organization (internal use for Mission Control project).
-
-**Q: How do I update the framework?**
-A: Edit the CSS files in src/styles/. The demo.html file will automatically use updated styles.
-
----
-
-## 🤝 Contributing
-
-This design system is a foundation layer. Additional components and utilities can be added by:
-1. Adding new CSS rules following the established patterns
-2. Updating the demo.html to showcase new components
-3. Documenting new components in DESIGN_SYSTEM.md
-
----
-
-## 📧 Support
-
-For questions or issues:
-1. Check the documentation files
-2. Review the demo.html for examples
-3. Inspect the CSS source for implementation details
-
----
-
-**Built with ❤️ for Mission Control V4**
-
-Get started now:
+Logs appear in console output and can be piped to files:
 ```bash
-cd /home/clawd/.openclaw/workspace/mission-control
-python3 -m http.server 8000
-# Open: http://localhost:8000/public/demo.html
+npm start > api.log 2>&1
 ```
+
+## Storage
+
+Data is persisted in JSON files located at:
+```
+server/db/data/
+├── tasks.json
+├── intelligence.json
+├── cron_jobs.json
+├── api_usage.json
+├── agents.json
+├── messages.json
+├── documents.json
+├── journal.json
+├── clients.json
+├── weekly_recaps.json
+└── ...
+```
+
+All data is automatically formatted with proper JSON indentation for readability.
+
+## Example Usage
+
+### Create a Task
+```bash
+curl -X POST http://localhost:3000/api/workshop/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Build API",
+    "description": "Complete REST API",
+    "tags": ["api", "backend"],
+    "priority": "high"
+  }'
+```
+
+### Get All Tasks
+```bash
+curl http://localhost:3000/api/workshop/tasks
+```
+
+### Create Intelligence Report
+```bash
+curl -X POST http://localhost:3000/api/intelligence \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Q1 Strategy",
+    "category": "strategic",
+    "content": "Analysis of Q1 opportunities",
+    "impact_summary": "40% efficiency gain",
+    "strategy_summary": "Implement automation"
+  }'
+```
+
+### Send Message
+```bash
+curl -X POST http://localhost:3000/api/comms/messages \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sender_id": "agent-1",
+    "sender_name": "Agent Smith",
+    "message_text": "Task completed",
+    "avatar": "🤖"
+  }'
+```
+
+### Get Dashboard Stats
+```bash
+curl http://localhost:3000/api/dashboard/stats
+```
+
+## Features
+
+✅ **Complete CRUD Operations** - Create, Read, Update, Delete for all resources
+✅ **Task Management** - Full lifecycle management with status tracking
+✅ **Intelligence Reports** - Strategic planning with deployment capability
+✅ **Cron Job Scheduling** - Schedule and manage automated jobs
+✅ **API Usage Tracking** - Monitor spend by model and service
+✅ **Agent Management** - Track active agents and their tasks
+✅ **Communications** - Message history and broadcasting
+✅ **Document Storage** - Organize documents by category
+✅ **Journal Entries** - Daily notes with tags
+✅ **Client Management** - CRM functionality
+✅ **Weekly Recaps** - Summarize progress and metrics
+✅ **Dashboard** - Stats, activity feed, and git integration
+✅ **Error Handling** - Comprehensive error responses
+✅ **Request Logging** - All requests logged with metadata
+✅ **CORS Enabled** - Pre-configured for frontend integration
+
+## Performance
+
+- **Fast:** JSON file-based storage with in-memory operations
+- **Scalable:** Efficient storage layer abstraction
+- **Lightweight:** No database server required
+- **Portable:** Self-contained, runs anywhere Node.js is available
+
+## Development
+
+### Add a New Endpoint
+
+1. Create route file in `/server/routes/`
+2. Export Express router
+3. Import and register in `app.js`
+4. Test with curl or API client
+
+### Example Route
+```javascript
+const express = require('express');
+const router = express.Router();
+const storage = require('../db/storage');
+
+storage.initCollection('items', []);
+
+router.get('/', (req, res) => {
+  try {
+    const items = storage.findAll('items');
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch items' });
+  }
+});
+
+module.exports = router;
+```
+
+## License
+
+ISC
+
+## Support
+
+For issues or questions, check the logs or verify JSON file integrity in `/server/db/data/`.

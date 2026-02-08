@@ -1,105 +1,137 @@
 const express = require('express');
-const router = express.Router();
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { execSync } = require('child_process');
 const storage = require('../db/storage');
 
-// Initialize activity collection
-storage.initCollection('activity', [
-  {
-    id: '1',
-    action: 'Commit',
-    description: 'feat(design): iOS Liquid Glass Design System',
-    source: 'DAVE',
-    timestamp: '2026-02-08T18:10:30Z',
-    color: '#64D2FF'
-  },
-  {
-    id: '2',
-    action: 'Task Updated',
-    description: 'Dashboard implementation started',
-    source: 'DAVE',
-    timestamp: '2026-02-08T18:05:00Z',
-    color: '#FF9F0A'
-  },
-  {
-    id: '3',
-    action: 'Status Updated',
-    description: 'System online, services running',
-    source: 'Gateway',
-    timestamp: '2026-02-08T18:00:00Z',
-    color: 'rgba(255,255,255,0.3)'
-  }
-]);
+const router = express.Router();
 
-// Get dashboard activity feed
-router.get('/activity', (req, res) => {
-  try {
-    const activity = storage.findAll('activity');
-    res.json(activity.reverse());
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get recent commits from git
-router.get('/commits', (req, res) => {
-  try {
-    // Run git log
-    const repoPath = process.env.REPO_PATH || '/home/clawd/.openclaw/workspace/mission-control';
-    exec(`cd ${repoPath} && git log --format='%h|%an|%ae|%ai|%s' -20`, (error, stdout, stderr) => {
-      if (error) {
-        console.error('Git error:', error);
-        return res.status(500).json({ error: 'Could not fetch commits' });
-      }
-
-      const commits = stdout.trim().split('\n').filter(line => line.length > 0).map(line => {
-        const [hash, author, email, timestamp, subject] = line.split('|');
-        return {
-          id: hash,
-          hash: hash.substring(0, 7),
-          author,
-          email,
-          timestamp,
-          subject,
-          url: `#` // Link to git repo if needed
-        };
-      });
-
-      res.json(commits);
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get dashboard stats
+// GET /api/dashboard/stats - Stat cards data
 router.get('/stats', (req, res) => {
   try {
     const tasks = storage.findAll('tasks');
-    const queued = tasks.filter(t => t.status === 'queued').length;
-    const active = tasks.filter(t => t.status === 'active').length;
-    const completed = tasks.filter(t => t.status === 'completed').length;
+    const intelligence = storage.findAll('intelligence');
+    const clients = storage.findAll('clients');
+    const messages = storage.findAll('messages');
 
-    res.json({
-      tasks: {
-        total: tasks.length,
-        queued,
-        active,
-        completed
-      },
-      uptime: calculateUptime(),
-      health: 'good'
-    });
+    const activeTasks = tasks.filter(t => t.status === 'active').length;
+    const completedTasks = tasks.filter(t => t.status === 'completed').length;
+    const deployedIntelligence = intelligence.filter(i => i.deployed).length;
+    const activeClients = clients.filter(c => c.status === 'active').length;
+
+    const stats = {
+      total_tasks: tasks.length,
+      active_tasks: activeTasks,
+      completed_tasks: completedTasks,
+      task_completion_rate: tasks.length > 0 ? ((completedTasks / tasks.length) * 100).toFixed(1) : 0,
+      intelligence_reports: intelligence.length,
+      intelligence_deployed: deployedIntelligence,
+      total_clients: clients.length,
+      active_clients: activeClients,
+      total_messages: messages.length,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(stats);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ error: 'Failed to fetch stats' });
   }
 });
 
-function calculateUptime() {
-  // Mock uptime calculation
-  return '24 days 12h';
-}
+// GET /api/dashboard/activity - Activity feed
+router.get('/activity', (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit) : 50;
+    
+    const activities = [];
+
+    // Get recent messages
+    const messages = storage.findAll('messages');
+    messages.forEach(msg => {
+      if (msg.message_text) {
+        activities.push({
+          type: 'message',
+          timestamp: msg.timestamp,
+          actor: msg.sender_name || 'Unknown',
+          action: 'sent message',
+          description: msg.message_text.substring(0, 100),
+          avatar: msg.avatar || '💬'
+        });
+      }
+    });
+
+    // Get recent task activities
+    const tasks = storage.findAll('tasks');
+    tasks.forEach(task => {
+      if (task.activity_log) {
+        task.activity_log.forEach(log => {
+          activities.push({
+            type: 'task',
+            timestamp: log.timestamp,
+            actor: log.user || 'system',
+            action: log.action,
+            description: `Task: ${task.title}`,
+            task_id: task.id
+          });
+        });
+      }
+    });
+
+    // Sort by timestamp and apply limit
+    const sorted = activities
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, limit);
+
+    res.json({
+      count: sorted.length,
+      activities: sorted
+    });
+  } catch (error) {
+    console.error('Error fetching activity:', error);
+    res.status(500).json({ error: 'Failed to fetch activity feed' });
+  }
+});
+
+// GET /api/commits - Recent git commits
+router.get('/commits', (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    
+    // Try to get git log
+    try {
+      const cwd = process.cwd();
+      const gitLog = execSync(
+        `git log --oneline -${limit} --pretty=format:"%H|%an|%ae|%ai|%s"`,
+        { cwd, encoding: 'utf8' }
+      );
+
+      const commits = gitLog.trim().split('\n').map(line => {
+        const [hash, author, email, date, message] = line.split('|');
+        return {
+          hash: hash.substring(0, 7),
+          author,
+          email,
+          timestamp: date,
+          message
+        };
+      });
+
+      res.json({
+        count: commits.length,
+        commits
+      });
+    } catch (error) {
+      // Git not available or not a git repo
+      console.warn('Git log not available:', error.message);
+      res.json({
+        count: 0,
+        commits: [],
+        note: 'Git repository not available'
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching commits:', error);
+    res.status(500).json({ error: 'Failed to fetch commits' });
+  }
+});
 
 module.exports = router;

@@ -1,0 +1,481 @@
+<!-- DocuDigest Page Component -->
+<main class="docudigest-container" id="docudigestContainer">
+  <!-- Header Section -->
+  <section class="docudigest-header">
+    <div class="header-content">
+      <h1 class="page-title">DocuDigest</h1>
+      <p class="page-subtitle">Upload and process documents with AI-powered extraction</p>
+    </div>
+  </section>
+
+  <!-- Upload Section -->
+  <section class="upload-section">
+    <div class="upload-dropzone" id="uploadDropzone">
+      <div class="upload-content">
+        <div class="upload-icon">📤</div>
+        <h3 class="upload-title">Drag & Drop PDF Files</h3>
+        <p class="upload-subtitle">or click to browse</p>
+        <input 
+          type="file" 
+          id="fileInput" 
+          class="file-input" 
+          accept=".pdf" 
+          multiple
+          style="display: none;"
+        />
+      </div>
+    </div>
+
+    <!-- Options -->
+    <div class="upload-options">
+      <label class="option-toggle">
+        <input type="checkbox" id="autoDetectClient" checked />
+        <span>Auto-detect Client</span>
+      </label>
+      
+      <select id="typeFilter" class="type-filter">
+        <option value="all">All Types</option>
+        <option value="contract">Contract</option>
+        <option value="invoice">Invoice</option>
+        <option value="report">Report</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Processing Status -->
+  <section class="processing-section" id="processingSection" style="display: none;">
+    <h2 class="section-title">Processing Files...</h2>
+    <div class="processing-list" id="processingList">
+      <!-- Processing items added dynamically -->
+    </div>
+  </section>
+
+  <!-- Processed Documents List -->
+  <section class="processed-section" id="processedSection" style="display: none;">
+    <h2 class="section-title">Processed Documents</h2>
+    <div class="processed-table-wrapper">
+      <table class="processed-table">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Date</th>
+            <th>Pages</th>
+            <th>Size</th>
+            <th>Keywords</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="processedTableBody">
+          <!-- Processed items added dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Extracted Content Modal -->
+  <div class="modal" id="contentModal">
+    <div class="modal-content extracted-content">
+      <button class="modal-close" id="closeContentModal">&times;</button>
+      <h2 id="contentTitle"></h2>
+      <div id="extractedContent"></div>
+    </div>
+  </div>
+</main>
+
+<style>
+.docudigest-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.docudigest-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.upload-dropzone {
+  padding: 3rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 2px dashed var(--border-glass);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.upload-dropzone:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--accent-blue);
+}
+
+.upload-dropzone.dragover {
+  background: var(--accent-blue-light);
+  border-color: var(--accent-blue);
+  transform: scale(1.01);
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.upload-icon {
+  font-size: 3rem;
+}
+
+.upload-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.upload-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.upload-options {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.option-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color var(--duration-normal) var(--ease-smooth);
+}
+
+.option-toggle:hover {
+  color: var(--text-primary);
+}
+
+.option-toggle input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-blue);
+}
+
+.type-filter {
+  padding: 0.5rem 1rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.type-filter:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glass-highlight);
+}
+
+.type-filter:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue-light);
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.processing-section,
+.processed-section {
+  padding: 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+}
+
+.processing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.processing-item {
+  padding: 1rem;
+  background: var(--bg-glass-active);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.processing-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.processing-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border-glass);
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.processing-progress {
+  height: 100%;
+  background: var(--accent-blue);
+  animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { width: 0; }
+  50% { width: 100%; }
+  100% { width: 100%; }
+}
+
+.processing-status {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.processed-table-wrapper {
+  overflow-x: auto;
+}
+
+.processed-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-primary);
+}
+
+.processed-table thead {
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.processed-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.processed-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 0.9rem;
+}
+
+.processed-table tbody tr:hover {
+  background: var(--bg-glass-hover);
+}
+
+.doc-filename {
+  font-weight: 500;
+  color: var(--accent-blue);
+  cursor: pointer;
+  transition: color var(--duration-normal) var(--ease-smooth);
+}
+
+.doc-filename:hover {
+  color: #0063CC;
+  text-decoration: underline;
+}
+
+.doc-pages,
+.doc-size {
+  color: var(--text-secondary);
+}
+
+.doc-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.keyword-tag {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.action-btn:hover {
+  background: #0063CC;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: var(--blur-md);
+  z-index: var(--z-modal);
+  padding: 1rem;
+}
+
+.modal.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 2rem;
+}
+
+.extracted-content h2 {
+  margin-top: 0;
+  color: var(--accent-blue);
+}
+
+.extracted-content h3 {
+  color: var(--text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.extracted-content p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.5rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.modal-close:hover {
+  background: var(--bg-glass-hover);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .docudigest-container {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .upload-dropzone {
+    padding: 2rem;
+    min-height: 250px;
+  }
+  
+  .processed-table {
+    font-size: 0.8rem;
+  }
+  
+  .processed-table th,
+  .processed-table td {
+    padding: 0.5rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+}
+</style>

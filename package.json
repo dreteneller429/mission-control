@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server/app.js",
     "dev": "nodemon server/app.js",
+    "seed": "node server/scripts/seed.js",
+    "setup": "npm install && npm run seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -20,7 +22,8 @@
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "uuid": "^9.0.0",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

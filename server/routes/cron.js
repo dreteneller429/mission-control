@@ -1,124 +1,255 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const router = express.Router();
 const storage = require('../db/storage');
 
-const router = express.Router();
+// Initialize cron jobs collection with default jobs
+storage.initCollection('cron', [
+  {
+    id: 'morning-briefing',
+    name: 'Morning Briefing',
+    description: 'Scan AI news, RE market updates, SureClose pipeline',
+    schedule: '0 7 * * *',
+    schedule_readable: 'Every day at 7:00 AM EST',
+    status: 'active',
+    last_run: '2026-02-08T07:15:00Z',
+    next_run: '2026-02-09T07:00:00Z',
+    last_result: 'success',
+    created_at: '2026-01-15T10:00:00Z'
+  },
+  {
+    id: 'task-summary',
+    name: 'Task Summary',
+    description: 'Pull tasks, organize by urgency, send morning digest',
+    schedule: '0 8 * * *',
+    schedule_readable: 'Every day at 8:00 AM EST',
+    status: 'active',
+    last_run: '2026-02-08T08:02:00Z',
+    next_run: '2026-02-09T08:00:00Z',
+    last_result: 'success',
+    created_at: '2026-01-20T10:00:00Z'
+  },
+  {
+    id: 'email-check',
+    name: 'Email Check',
+    description: 'Monitor david@sureclose.ai for new emails',
+    schedule: '*/10 * * * *',
+    schedule_readable: 'Every 10 minutes',
+    status: 'active',
+    last_run: '2026-02-08T18:10:00Z',
+    next_run: '2026-02-08T18:20:00Z',
+    last_result: 'success',
+    created_at: '2026-01-10T10:00:00Z'
+  },
+  {
+    id: 'dashboard-notes',
+    name: 'Dashboard Notes Check',
+    description: 'Check if David left notes, process them',
+    schedule: '*/5 * * * *',
+    schedule_readable: 'Every 5 minutes',
+    status: 'active',
+    last_run: '2026-02-08T18:15:00Z',
+    next_run: '2026-02-08T18:20:00Z',
+    last_result: 'success',
+    created_at: '2026-01-25T10:00:00Z'
+  },
+  {
+    id: 'weekly-swot',
+    name: 'Weekly SWOT',
+    description: 'Competitor research, opportunity identification',
+    schedule: '0 9 * * 1',
+    schedule_readable: 'Every Monday at 9:00 AM EST',
+    status: 'active',
+    last_run: '2026-02-01T09:05:00Z',
+    next_run: '2026-02-15T09:00:00Z',
+    last_result: 'success',
+    created_at: '2026-01-15T10:00:00Z'
+  },
+  {
+    id: 'security-audit',
+    name: 'Weekly Security Audit',
+    description: 'Port scan, failed logins, permissions check',
+    schedule: '0 14 * * 1',
+    schedule_readable: 'Every Monday at 2:00 PM EST',
+    status: 'active',
+    last_run: '2026-02-01T14:10:00Z',
+    next_run: '2026-02-15T14:00:00Z',
+    last_result: 'success',
+    created_at: '2026-01-20T10:00:00Z'
+  }
+]);
 
-// Initialize collection
-storage.initCollection('cron_jobs', []);
-
-// GET /api/cron - List jobs
+// Get all cron jobs
 router.get('/', (req, res) => {
   try {
-    const jobs = storage.findAll('cron_jobs');
+    const jobs = storage.findAll('cron');
     res.json(jobs);
   } catch (error) {
-    console.error('Error fetching cron jobs:', error);
-    res.status(500).json({ error: 'Failed to fetch cron jobs' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// POST /api/cron - Create job
+// Get single cron job
+router.get('/:id', (req, res) => {
+  try {
+    const job = storage.findById('cron', req.params.id);
+    if (!job) {
+      return res.status(404).json({ error: 'Cron job not found' });
+    }
+    res.json(job);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create new cron job
 router.post('/', (req, res) => {
   try {
     const { name, description, schedule } = req.body;
-
-    if (!name || !schedule) {
-      return res.status(400).json({ error: 'Name and schedule are required' });
+    
+    if (!name || !description || !schedule) {
+      return res.status(400).json({ error: 'Missing required fields: name, description, schedule' });
     }
-
+    
     const job = {
-      id: uuidv4(),
+      id: `cron-${Date.now()}`,
       name,
-      description: description || '',
+      description,
       schedule,
-      next_run: calculateNextRun(schedule),
+      schedule_readable: generateReadableSchedule(schedule),
+      status: 'active',
       last_run: null,
-      status: 'active'
+      next_run: new Date(Date.now() + 3600000).toISOString(), // Next hour
+      last_result: 'pending',
+      created_at: new Date().toISOString()
     };
 
-    const saved = storage.add('cron_jobs', job);
-    res.status(201).json(saved);
+    storage.add('cron', job);
+    res.status(201).json({
+      success: true,
+      job,
+    });
   } catch (error) {
-    console.error('Error creating cron job:', error);
-    res.status(500).json({ error: 'Failed to create cron job' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// PUT /api/cron/:id - Update job
-router.put('/:id', (req, res) => {
+// Update cron job
+router.patch('/:id', (req, res) => {
   try {
-    const { name, description, schedule, status } = req.body;
-
-    const job = storage.findById('cron_jobs', req.params.id);
-    if (!job) {
+    const updates = req.body;
+    const updated = storage.update('cron', req.params.id, updates);
+    if (!updated) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
-
-    const updates = {};
-    if (name !== undefined) updates.name = name;
-    if (description !== undefined) updates.description = description;
-    if (schedule !== undefined) {
-      updates.schedule = schedule;
-      updates.next_run = calculateNextRun(schedule);
-    }
-    if (status !== undefined) updates.status = status;
-
-    const updated = storage.update('cron_jobs', req.params.id, updates);
     res.json(updated);
   } catch (error) {
-    console.error('Error updating cron job:', error);
-    res.status(500).json({ error: 'Failed to update cron job' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// DELETE /api/cron/:id - Delete job
+// Update cron job (PUT - for status toggle and other updates)
+router.put('/:id', (req, res) => {
+  try {
+    const { active } = req.body;
+    const updates = {};
+    
+    if (typeof active === 'boolean') {
+      updates.status = active ? 'active' : 'disabled';
+    }
+    
+    // Merge other updates
+    Object.assign(updates, req.body);
+    
+    const updated = storage.update('cron', req.params.id, updates);
+    if (!updated) {
+      return res.status(404).json({ error: 'Cron job not found' });
+    }
+    
+    res.json({
+      success: true,
+      job: updated,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Disable cron job
+router.post('/:id/disable', (req, res) => {
+  try {
+    const updated = storage.update('cron', req.params.id, { status: 'disabled' });
+    if (!updated) {
+      return res.status(404).json({ error: 'Cron job not found' });
+    }
+    res.json({ success: true, job: updated });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Enable cron job
+router.post('/:id/enable', (req, res) => {
+  try {
+    const updated = storage.update('cron', req.params.id, { status: 'active' });
+    if (!updated) {
+      return res.status(404).json({ error: 'Cron job not found' });
+    }
+    res.json({ success: true, job: updated });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete cron job
 router.delete('/:id', (req, res) => {
   try {
-    const job = storage.findById('cron_jobs', req.params.id);
+    const job = storage.remove('cron', req.params.id);
     if (!job) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
-
-    const deleted = storage.remove('cron_jobs', req.params.id);
-    res.json({ message: 'Cron job deleted', job: deleted });
+    res.json({ 
+      success: true,
+      message: 'Cron job deleted successfully',
+      deleted: job 
+    });
   } catch (error) {
-    console.error('Error deleting cron job:', error);
-    res.status(500).json({ error: 'Failed to delete cron job' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// POST /api/cron/:id/run - Trigger immediately
-router.post('/:id/run', (req, res) => {
-  try {
-    const job = storage.findById('cron_jobs', req.params.id);
-    if (!job) {
-      return res.status(404).json({ error: 'Cron job not found' });
-    }
-
-    // Simulate running the job
-    const updated = storage.update('cron_jobs', req.params.id, {
-      last_run: new Date().toISOString(),
-      next_run: calculateNextRun(job.schedule)
-    });
-
-    res.json({
-      message: 'Cron job triggered',
-      job: updated,
-      execution_time: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error running cron job:', error);
-    res.status(500).json({ error: 'Failed to run cron job' });
+// Helper function to generate readable cron schedules
+function generateReadableSchedule(cronString) {
+  const parts = cronString.trim().split(/\s+/);
+  if (parts.length !== 5) {
+    return cronString; // Return original if not valid
   }
-});
 
-// Helper function to calculate next run time
-function calculateNextRun(schedule) {
-  // Simple calculation - add 24 hours for daily, adjust as needed
-  const now = new Date();
-  const nextRun = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-  return nextRun.toISOString();
+  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
+
+  if (minute === '*/5' && hour === '*') {
+    return 'Every 5 minutes';
+  } else if (minute === '*/10' && hour === '*') {
+    return 'Every 10 minutes';
+  } else if (minute === '*/30' && hour === '*') {
+    return 'Every 30 minutes';
+  } else if (minute === '0' && dayOfMonth === '*' && month === '*') {
+    const hrs = parseInt(hour);
+    return `Every day at ${formatHour(hrs)}`;
+  } else if (minute === '0' && dayOfWeek === '1') {
+    const hrs = parseInt(hour);
+    return `Every Monday at ${formatHour(hrs)}`;
+  } else if (minute === '0' && dayOfWeek === '0') {
+    const hrs = parseInt(hour);
+    return `Every Sunday at ${formatHour(hrs)}`;
+  }
+
+  return cronString;
+}
+
+function formatHour(hour) {
+  const meridiem = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:00 ${meridiem} EST`;
 }
 
 module.exports = router;

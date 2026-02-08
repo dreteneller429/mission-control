@@ -1,102 +1,166 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const router = express.Router();
 const storage = require('../db/storage');
 
-const router = express.Router();
-
-// Initialize collection
-storage.initCollection('weekly_recaps', []);
-
-// GET /api/weekly-recaps/:week - Get week summary
-router.get('/:week', (req, res) => {
-  try {
-    const { week } = req.params;
-    
-    // Validate week format (YYYY-Www)
-    if (!week.match(/^\d{4}-W\d{2}$/)) {
-      return res.status(400).json({ error: 'Invalid week format. Use YYYY-Www' });
-    }
-
-    const recaps = storage.findAll('weekly_recaps');
-    const recap = recaps.find(r => r.week === week);
-
-    if (!recap) {
-      return res.status(404).json({ error: 'Weekly recap not found' });
-    }
-
-    res.json(recap);
-  } catch (error) {
-    console.error('Error fetching weekly recap:', error);
-    res.status(500).json({ error: 'Failed to fetch weekly recap' });
+// Initialize weekly recaps collection
+storage.initCollection('weekly-recaps', [
+  {
+    id: 'recap-w6-2026',
+    week: 'Week 6 (Feb 1-7, 2026)',
+    period: '2026-02-01T00:00:00Z to 2026-02-07T23:59:59Z',
+    summary: 'Major progress on Mission Control V4. Completed UI framework and began dashboard development. System health excellent.',
+    tasks_completed: 4,
+    tasks_active: 2,
+    highlights: [
+      'Completed Glassmorphism CSS Framework (Phase 1)',
+      'Navigation & Dashboard started (Phase 2 - 65% complete)',
+      'API integration planning complete',
+      'Team expanded with new sub-agents'
+    ],
+    metrics: {
+      completion_rate: '85%',
+      productivity: 'high',
+      bandwidth: '72%',
+      uptime: '99.8%'
+    },
+    focus_areas: [
+      'UI/UX Excellence',
+      'System Stability',
+      'Developer Experience'
+    ],
+    next_week_goals: [
+      'Complete Phase 2 (Dashboard)',
+      'Begin Phase 3 (Workshop Page)',
+      'Full API integration',
+      'Performance optimization'
+    ],
+    created_at: '2026-02-07T20:00:00Z'
+  },
+  {
+    id: 'recap-w5-2026',
+    week: 'Week 5 (Jan 26-Feb 1, 2026)',
+    period: '2026-01-26T00:00:00Z to 2026-02-01T23:59:59Z',
+    summary: 'Project kickoff and initial planning. Team formation and architecture decisions.',
+    tasks_completed: 2,
+    tasks_active: 3,
+    highlights: [
+      'Mission Control V4 project initiated',
+      'Design system established',
+      'Team structure defined',
+      'Development environment ready'
+    ],
+    metrics: {
+      completion_rate: '65%',
+      productivity: 'medium',
+      bandwidth: '45%',
+      uptime: '99.9%'
+    },
+    focus_areas: [
+      'Planning & Design',
+      'Environment Setup',
+      'Team Coordination'
+    ],
+    next_week_goals: [
+      'Phase 1 UI Framework',
+      'Component library creation',
+      'Dashboard mockups'
+    ],
+    created_at: '2026-02-01T20:00:00Z'
   }
-});
+]);
 
-// POST /api/weekly-recaps - Create weekly recap
-router.post('/', (req, res) => {
-  try {
-    const { week, start_date, end_date, summary, metrics } = req.body;
-
-    if (!week || !start_date || !end_date) {
-      return res.status(400).json({ 
-        error: 'week, start_date, and end_date are required' 
-      });
-    }
-
-    const recap = {
-      id: uuidv4(),
-      week,
-      start_date,
-      end_date,
-      summary: summary || '',
-      metrics: metrics || {
-        tasks_completed: 0,
-        tasks_created: 0,
-        focus_time_hours: 0,
-        intelligence_deployed: 0
-      }
-    };
-
-    const saved = storage.add('weekly_recaps', recap);
-    res.status(201).json(saved);
-  } catch (error) {
-    console.error('Error creating weekly recap:', error);
-    res.status(500).json({ error: 'Failed to create weekly recap' });
-  }
-});
-
-// PUT /api/weekly-recaps/:week - Update weekly recap
-router.put('/:week', (req, res) => {
-  try {
-    const { week } = req.params;
-    const { summary, metrics } = req.body;
-
-    const recaps = storage.findAll('weekly_recaps');
-    const recap = recaps.find(r => r.week === week);
-
-    if (!recap) {
-      return res.status(404).json({ error: 'Weekly recap not found' });
-    }
-
-    const updates = {};
-    if (summary !== undefined) updates.summary = summary;
-    if (metrics !== undefined) updates.metrics = metrics;
-
-    const updated = storage.update('weekly_recaps', recap.id, updates);
-    res.json(updated);
-  } catch (error) {
-    console.error('Error updating weekly recap:', error);
-    res.status(500).json({ error: 'Failed to update weekly recap' });
-  }
-});
-
-// GET /api/weekly-recaps - List all recaps
+// Get all weekly recaps
 router.get('/', (req, res) => {
   try {
-    const recaps = storage.findAll('weekly_recaps');
-    res.json(recaps);
+    const recaps = storage.findAll('weekly-recaps');
+    res.json(recaps.sort((a, b) =>
+      new Date(b.created_at) - new Date(a.created_at)
+    ));
   } catch (error) {
-    console.error('Error fetching recaps:', error);
-    res.status(500).json({ error: 'Failed to fetch weekly recaps' });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single weekly recap by ID or week format
+router.get('/:week', (req, res) => {
+  try {
+    const param = req.params.week;
+    let recap;
+    
+    // Try to find by ID first
+    recap = storage.findById('weekly-recaps', param);
+    
+    // If not found, try to find by week field (e.g., YYYY-Www or "Week X")
+    if (!recap) {
+      const recaps = storage.findAll('weekly-recaps');
+      recap = recaps.find(r => 
+        r.week === param || 
+        r.week.includes(param) ||
+        r.id.includes(param)
+      );
+    }
+    
+    if (!recap) {
+      return res.status(404).json({ error: 'Weekly recap not found' });
+    }
+    res.json(recap);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get most recent weekly recap
+router.get('/latest', (req, res) => {
+  try {
+    const recaps = storage.findAll('weekly-recaps');
+    const latest = recaps.sort((a, b) =>
+      new Date(b.created_at) - new Date(a.created_at)
+    )[0];
+    if (!latest) {
+      return res.status(404).json({ error: 'No weekly recaps found' });
+    }
+    res.json(latest);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create new weekly recap
+router.post('/', (req, res) => {
+  try {
+    const { week, period, summary, tasks_completed, highlights, metrics } = req.body;
+    const recap = {
+      id: `recap-w${Math.floor((Date.now() / 604800000) % 52)}`,
+      week,
+      period,
+      summary,
+      tasks_completed,
+      tasks_active: 0,
+      highlights: highlights || [],
+      metrics: metrics || {},
+      focus_areas: [],
+      next_week_goals: [],
+      created_at: new Date().toISOString()
+    };
+
+    storage.add('weekly-recaps', recap);
+    res.status(201).json(recap);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update weekly recap
+router.patch('/:id', (req, res) => {
+  try {
+    const updates = req.body;
+    const updated = storage.update('weekly-recaps', req.params.id, updates);
+    if (!updated) {
+      return res.status(404).json({ error: 'Weekly recap not found' });
+    }
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

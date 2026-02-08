@@ -1,0 +1,460 @@
+<!-- Documents Upgrade Page Component -->
+<main class="documents-container" id="documentsContainer">
+  <!-- Header Section -->
+  <section class="documents-header">
+    <div class="header-content">
+      <h1 class="page-title">Documents</h1>
+      <p class="page-subtitle">Manage and organize all project documents</p>
+    </div>
+  </section>
+
+  <!-- Two-Panel Layout -->
+  <section class="documents-layout">
+    <!-- Left Panel: Search & List -->
+    <div class="documents-left-panel">
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input 
+          type="text" 
+          id="docSearch" 
+          class="doc-search-input" 
+          placeholder="Search documents..."
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="category-filters">
+        <button class="category-btn active" data-category="all">All Categories</button>
+        <button class="category-btn" data-category="development">Development</button>
+        <button class="category-btn" data-category="sub-agent">Sub-agent</button>
+        <button class="category-btn" data-category="real-estate">Real Estate</button>
+        <button class="category-btn" data-category="planning">Planning</button>
+        <button class="category-btn" data-category="intelligence">Intelligence</button>
+        <button class="category-btn" data-category="research">Research</button>
+        <button class="category-btn" data-category="client">Client</button>
+      </div>
+
+      <!-- Document List -->
+      <div class="documents-list" id="documentsList">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading documents...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Preview -->
+    <div class="documents-right-panel">
+      <div class="preview-container" id="previewContainer">
+        <div class="preview-empty">
+          <div class="empty-icon">📄</div>
+          <p>Select a document to view</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+.documents-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.documents-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.documents-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.documents-left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.search-container {
+  position: relative;
+}
+
+.doc-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.doc-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.doc-search-input:focus {
+  outline: none;
+  background: var(--bg-glass-hover);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue-light);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.category-btn {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  white-space: nowrap;
+}
+
+.category-btn:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glass-highlight);
+  color: var(--text-primary);
+}
+
+.category-btn.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: white;
+}
+
+.documents-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-right: 0.5rem;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 300px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-glass);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.document-item {
+  padding: 1rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.document-item:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glass-highlight);
+  transform: translateX(4px);
+}
+
+.document-item.active {
+  background: var(--accent-blue-light);
+  border-color: var(--accent-blue);
+}
+
+.doc-item-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doc-item-date {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.doc-item-category {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+.category-development { background: var(--accent-blue); }
+.category-sub-agent { background: var(--accent-purple); }
+.category-real-estate { background: var(--accent-green); }
+.category-planning { background: var(--accent-orange); }
+.category-intelligence { background: var(--accent-teal); }
+.category-research { background: #FF6B6B; }
+.category-client { background: #4D96FF; }
+
+.documents-right-panel {
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.preview-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.preview-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.preview-title-section {
+  flex: 1;
+}
+
+.preview-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.preview-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  background: var(--bg-glass-hover);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.btn-icon:hover {
+  background: var(--bg-glass-active);
+  border-color: var(--border-glass-highlight);
+}
+
+.btn-icon.danger:hover {
+  background: var(--accent-red-light);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+.preview-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+.preview-content h1,
+.preview-content h2,
+.preview-content h3 {
+  margin: 1rem 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.preview-content p {
+  margin: 0 0 0.75rem 0;
+}
+
+.preview-content ul,
+.preview-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.preview-content li {
+  margin-bottom: 0.4rem;
+}
+
+.preview-content code {
+  background: var(--bg-glass-active);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .documents-layout {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .documents-container {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .documents-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .documents-left-panel {
+    max-height: 300px;
+  }
+  
+  .documents-right-panel {
+    min-height: 400px;
+  }
+}
+
+/* Scrollbar styling */
+.documents-list::-webkit-scrollbar,
+.category-filters::-webkit-scrollbar,
+.preview-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.documents-list::-webkit-scrollbar-track,
+.category-filters::-webkit-scrollbar-track,
+.preview-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.documents-list::-webkit-scrollbar-thumb,
+.category-filters::-webkit-scrollbar-thumb,
+.preview-container::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 3px;
+}
+
+.documents-list::-webkit-scrollbar-thumb:hover,
+.category-filters::-webkit-scrollbar-thumb:hover,
+.preview-container::-webkit-scrollbar-thumb:hover {
+  background: var(--border-glass-highlight);
+}
+</style>

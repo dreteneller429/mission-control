@@ -1,51 +1,88 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const router = express.Router();
 const storage = require('../db/storage');
 
-const router = express.Router();
+// Initialize clients collection
+storage.initCollection('clients', [
+  {
+    id: 'client-8unit',
+    name: '8-Unit Portfolio',
+    type: 'Real Estate',
+    status: 'active',
+    deals: 8,
+    value: '$2.4M',
+    roi: '12.5%',
+    manager: 'Team A',
+    created_at: '2025-06-15T10:00:00Z'
+  },
+  {
+    id: 'client-7unit',
+    name: '7-Unit Portfolio',
+    type: 'Real Estate',
+    status: 'active',
+    deals: 7,
+    value: '$1.8M',
+    roi: '11.2%',
+    manager: 'Team B',
+    created_at: '2025-07-20T10:00:00Z'
+  },
+  {
+    id: 'client-159unit',
+    name: '159-Unit Development',
+    type: 'Real Estate',
+    status: 'planning',
+    deals: 159,
+    value: '$45.8M',
+    roi: '15.3%',
+    manager: 'Executive Team',
+    created_at: '2025-09-01T10:00:00Z'
+  },
+  {
+    id: 'client-mario',
+    name: 'Mario Properties',
+    type: 'Real Estate',
+    status: 'active',
+    deals: 12,
+    value: '$3.2M',
+    roi: '10.8%',
+    manager: 'Mario',
+    created_at: '2025-08-10T10:00:00Z'
+  },
+  {
+    id: 'client-home-warranty',
+    name: 'Home Warranty Program',
+    type: 'Service',
+    status: 'active',
+    deals: 450,
+    value: '$1.2M',
+    roi: '18.5%',
+    manager: 'Operations',
+    created_at: '2025-10-05T10:00:00Z'
+  },
+  {
+    id: 'client-tanner',
+    name: 'Tanner Ventures',
+    type: 'Partnership',
+    status: 'active',
+    deals: 8,
+    value: '$2.0M',
+    roi: '9.5%',
+    manager: 'Tanner',
+    created_at: '2025-11-12T10:00:00Z'
+  }
+]);
 
-// Initialize collection
-storage.initCollection('clients', []);
-
-// GET /api/clients - List clients
+// Get all clients
 router.get('/', (req, res) => {
   try {
     const clients = storage.findAll('clients');
     res.json(clients);
   } catch (error) {
-    console.error('Error fetching clients:', error);
-    res.status(500).json({ error: 'Failed to fetch clients' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// POST /api/clients - Create client
-router.post('/', (req, res) => {
-  try {
-    const { name, company, status = 'active', mrr = 0, next_action = '' } = req.body;
-
-    if (!name || !company) {
-      return res.status(400).json({ error: 'Name and company are required' });
-    }
-
-    const client = {
-      id: uuidv4(),
-      name,
-      company,
-      status,
-      mrr,
-      last_activity: new Date().toISOString(),
-      next_action
-    };
-
-    const saved = storage.add('clients', client);
-    res.status(201).json(saved);
-  } catch (error) {
-    console.error('Error creating client:', error);
-    res.status(500).json({ error: 'Failed to create client' });
-  }
-});
-
-// GET /api/clients/:id - Get client details
+// Get single client
 router.get('/:id', (req, res) => {
   try {
     const client = storage.findById('clients', req.params.id);
@@ -54,50 +91,57 @@ router.get('/:id', (req, res) => {
     }
     res.json(client);
   } catch (error) {
-    console.error('Error fetching client:', error);
-    res.status(500).json({ error: 'Failed to fetch client' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// PUT /api/clients/:id - Update client
-router.put('/:id', (req, res) => {
+// Create new client
+router.post('/', (req, res) => {
   try {
-    const { name, company, status, mrr, next_action } = req.body;
+    const { name, type, manager } = req.body;
+    const client = {
+      id: `client-${Date.now()}`,
+      name,
+      type,
+      status: 'active',
+      manager,
+      deals: 0,
+      value: '$0',
+      roi: '0%',
+      created_at: new Date().toISOString()
+    };
 
-    const client = storage.findById('clients', req.params.id);
-    if (!client) {
+    storage.add('clients', client);
+    res.status(201).json(client);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update client
+router.patch('/:id', (req, res) => {
+  try {
+    const updates = req.body;
+    const updated = storage.update('clients', req.params.id, updates);
+    if (!updated) {
       return res.status(404).json({ error: 'Client not found' });
     }
-
-    const updates = {};
-    if (name !== undefined) updates.name = name;
-    if (company !== undefined) updates.company = company;
-    if (status !== undefined) updates.status = status;
-    if (mrr !== undefined) updates.mrr = mrr;
-    if (next_action !== undefined) updates.next_action = next_action;
-    updates.last_activity = new Date().toISOString();
-
-    const updated = storage.update('clients', req.params.id, updates);
     res.json(updated);
   } catch (error) {
-    console.error('Error updating client:', error);
-    res.status(500).json({ error: 'Failed to update client' });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// DELETE /api/clients/:id - Delete client
+// Delete client
 router.delete('/:id', (req, res) => {
   try {
-    const client = storage.findById('clients', req.params.id);
+    const client = storage.remove('clients', req.params.id);
     if (!client) {
       return res.status(404).json({ error: 'Client not found' });
     }
-
-    const deleted = storage.remove('clients', req.params.id);
-    res.json({ message: 'Client deleted', client: deleted });
+    res.json({ success: true, deleted: client });
   } catch (error) {
-    console.error('Error deleting client:', error);
-    res.status(500).json({ error: 'Failed to delete client' });
+    res.status(500).json({ error: error.message });
   }
 });
 
