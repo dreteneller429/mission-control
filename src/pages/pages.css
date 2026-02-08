@@ -71,13 +71,16 @@
   padding: 0 8px;
 }
 
+.sidebar.collapsed .nav-item {
+  margin-bottom: 10px;
+}
+
 .sidebar.collapsed .nav-link {
   width: 100%;
-  padding: 12px 8px;
+  padding: 14px 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
   border-radius: var(--radius-sm);
   gap: 0;
 }
@@ -315,14 +318,14 @@
 }
 
 .nav-item {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   text-decoration: none;
@@ -968,7 +971,7 @@
   }
 
   .sidebar.collapsed {
-    width: 60px;
+    width: 88px;
   }
 
   .dashboard-container,
@@ -999,8 +1002,8 @@
   .docudigest-container.sidebar-collapsed,
   .weekly-recaps-container.sidebar-collapsed,
   .workshop-page.sidebar-collapsed {
-    width: calc(100% - 60px) !important;
-    margin-left: 60px !important;
+    width: calc(100% - 115px) !important;
+    margin-left: 115px !important;
   }
 
   .stat-cards-grid {
@@ -1036,7 +1039,7 @@
 
   .sidebar.collapsed {
     transform: translateX(0);
-    width: 60px;
+    width: 88px;
   }
 
   .sidebar-toggle {
