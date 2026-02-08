@@ -157,10 +157,65 @@ function setupNavigation() {
       const page = link.getAttribute('data-page');
       appState.currentPage = page;
       
-      // Page navigation logic (for future implementation)
-      console.log('Navigating to:', page);
+      // Load the selected page
+      loadPage(page);
     });
   });
+}
+
+// ====================================================================
+// Load Page Dynamically
+// ====================================================================
+
+function loadPage(page) {
+  const dashContainer = document.getElementById('dashboardContainer');
+  if (!dashContainer) return;
+
+  // Map page names to their filenames
+  const pageMap = {
+    dashboard: 'Dashboard.html',
+    intelligence: 'Intelligence.html',
+    journal: 'Journal.html',
+    documents: 'Documents.html',
+    agents: 'Agents.html',
+    recaps: 'Recaps.html',
+    clients: 'Clients.html',
+    cron: 'Cron.html',
+    api: 'Api.html',
+    workshop: 'Workshop.html',
+  };
+
+  const filename = pageMap[page] || 'Dashboard.html';
+
+  fetch(`./${filename}`)
+    .then(response => response.text())
+    .then(html => {
+      dashContainer.innerHTML = html;
+      
+      // Initialize page-specific logic based on page name
+      switch(page) {
+        case 'intelligence':
+          // Load Intelligence-specific JavaScript
+          const script = document.createElement('script');
+          script.src = '../js/intelligence-logic.js';
+          document.body.appendChild(script);
+          break;
+        case 'agents':
+          // Load Agents-specific JavaScript
+          import('../js/agents-logic.js').then(module => {
+            if (module.initAgentsPage) {
+              module.initAgentsPage();
+            }
+          }).catch(error => console.error('Error initializing agents page:', error));
+          break;
+        case 'dashboard':
+          setupStatCardClickHandlers();
+          setupQuickLinkHandlers();
+          initializeActivityFeed();
+          break;
+      }
+    })
+    .catch(error => console.error(`Error loading page ${filename}:`, error));
 }
 
 // ====================================================================
