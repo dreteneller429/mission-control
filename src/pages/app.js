@@ -39,7 +39,6 @@ function initApp() {
   startHeartbeat();
   startActivityFeed();
   setupStatusToggle();
-  setupNavigation();
 }
 
 // ====================================================================
@@ -55,6 +54,7 @@ function loadNavigation() {
       navContainer.innerHTML = html;
       setupSidebarToggle();
       setupMobileMenu();
+      setupNavigation();
     })
     .catch(error => console.error('Error loading navigation:', error));
 }
@@ -164,6 +164,20 @@ function setupNavigation() {
 }
 
 // ====================================================================
+// Update Active Navigation Link
+// ====================================================================
+
+function updateActiveNavLink(page) {
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('data-page') === page) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// ====================================================================
 // Load Page Dynamically
 // ====================================================================
 
@@ -178,10 +192,10 @@ function loadPage(page) {
     journal: 'Journal.html',
     documents: 'Documents.html',
     agents: 'Agents.html',
-    recaps: 'Recaps.html',
+    recaps: 'WeeklyRecaps.html',
     clients: 'Clients.html',
-    cron: 'Cron.html',
-    api: 'Api.html',
+    cron: 'CronJobs.html',
+    api: 'APIUsage.html',
     workshop: 'Workshop.html',
   };
 
@@ -343,16 +357,20 @@ function setupStatCardClickHandlers() {
 function handleStatCardClick(cardType) {
   switch(cardType) {
     case 'workshop':
-      console.log('Opening Workshop page');
+      loadPage('workshop');
+      updateActiveNavLink('workshop');
       break;
     case 'agents':
-      console.log('Opening Agents page');
+      loadPage('agents');
+      updateActiveNavLink('agents');
       break;
     case 'documents':
-      console.log('Opening Documents page');
+      loadPage('documents');
+      updateActiveNavLink('documents');
       break;
     case 'status':
-      console.log('Opening Status details');
+      // Status card - could show a modal or details
+      console.log('Status details clicked');
       break;
     default:
       console.log('Card clicked:', cardType);
@@ -375,9 +393,17 @@ function setupQuickLinkHandlers() {
 }
 
 function handleQuickLinkClick(linkName) {
-  console.log('Quick link clicked:', linkName);
-  
-  // Add visual feedback
+  // Map button text to page names
+  const pageMap = {
+    'Workshop Queue': 'workshop',
+    'Client Intelligence': 'intelligence',
+    'DocuDigest': 'documents',
+    '+ Add Task': 'workshop',
+  };
+
+  const page = pageMap[linkName] || 'dashboard';
+  loadPage(page);
+  updateActiveNavLink(page);
   showNotification(`Opening: ${linkName}`);
 }
 
@@ -475,3 +501,10 @@ style.textContent = `
 document.head.appendChild(style);
 
 console.log('Mission Control V4 - Dashboard Initialized');
+
+// Initialize the app when the DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
