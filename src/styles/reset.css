@@ -1,0 +1,188 @@
+/* ====================================================================
+   RESET.CSS - CSS Reset & HTML5 Semantic Defaults
+   ==================================================================== */
+
+/* Box sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Typography resets */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+/* List resets */
+ul, ol, dl {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Link resets */
+a {
+  color: inherit;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a:hover,
+a:active {
+  outline: 0;
+}
+
+/* Button resets */
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+}
+
+button::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* Input resets */
+input,
+textarea,
+select {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  -webkit-text-fill-color: inherit;
+}
+
+textarea {
+  resize: vertical;
+  overflow: auto;
+  vertical-align: top;
+}
+
+/* Image resets */
+img {
+  border: 0;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Form element resets */
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+
+/* Table resets */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th, td {
+  padding: 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* Prevent user select on interactive elements */
+button,
+[role="button"],
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+a[href],
+[tabindex] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent user select on icons */
+svg,
+.icon {
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* HR resets */
+hr {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Code blocks */
+code,
+pre {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Font smoothing */
+body,
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

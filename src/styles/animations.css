@@ -1,0 +1,553 @@
+/* ====================================================================
+   ANIMATIONS.CSS - Keyframe Animations & Transitions
+   ==================================================================== */
+
+/* ====================================================================
+   Fade Animations
+   ==================================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ====================================================================
+   Slide Animations
+   ==================================================================== */
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ====================================================================
+   Scale Animations
+   ==================================================================== */
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ====================================================================
+   Pulse Animations
+   ==================================================================== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+  }
+}
+
+/* ====================================================================
+   Spin/Rotate Animations
+   ==================================================================== */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* ====================================================================
+   Color Transition Animations
+   ==================================================================== */
+
+@keyframes colorShift {
+  0% {
+    color: var(--text-primary);
+  }
+  50% {
+    color: var(--accent-blue);
+  }
+  100% {
+    color: var(--text-primary);
+  }
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-color: var(--bg-glass);
+  }
+  50% {
+    background-color: var(--bg-glass-active);
+  }
+  100% {
+    background-color: var(--bg-glass);
+  }
+}
+
+/* ====================================================================
+   Shimmer Loading Animation
+   ==================================================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ====================================================================
+   Glow Animations
+   ==================================================================== */
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 122, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+  }
+}
+
+@keyframes glowText {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(0, 122, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+  }
+}
+
+/* ====================================================================
+   Swing Animation
+   ==================================================================== */
+
+@keyframes swing {
+  20% {
+    transform: rotate(15deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* ====================================================================
+   Wiggle Animation
+   ==================================================================== */
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* ====================================================================
+   Utility Animation Classes
+   ==================================================================== */
+
+.animate-fadeIn {
+  animation: fadeIn var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-fadeOut {
+  animation: fadeOut var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slideInUp {
+  animation: slideInUp var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slideInDown {
+  animation: slideInDown var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-scaleOut {
+  animation: scaleOut var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-bounce {
+  animation: bounce 1s var(--ease-smooth) infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s var(--ease-smooth) infinite;
+}
+
+.animate-pulseScale {
+  animation: pulseScale 2s var(--ease-smooth) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-spinReverse {
+  animation: spinReverse 1s linear infinite;
+}
+
+.animate-glow {
+  animation: glow 2s var(--ease-smooth) infinite;
+}
+
+.animate-glowText {
+  animation: glowText 2s var(--ease-smooth) infinite;
+}
+
+.animate-swing {
+  animation: swing 1s var(--ease-smooth) infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s var(--ease-smooth) infinite;
+}
+
+.animate-ring {
+  animation: ring 2s var(--ease-smooth) infinite;
+}
+
+/* ====================================================================
+   Transition Utility Classes
+   ==================================================================== */
+
+.transition-fast {
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.transition-normal {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-slow {
+  transition: all var(--duration-slow) var(--ease-smooth);
+}
+
+.transition-colors {
+  transition: color var(--duration-normal) var(--ease-smooth),
+              background-color var(--duration-normal) var(--ease-smooth),
+              border-color var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-transform {
+  transition: transform var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-opacity {
+  transition: opacity var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-none {
+  transition: none;
+}
+
+/* ====================================================================
+   Delay Utilities
+   ==================================================================== */
+
+.delay-100 {
+  animation-delay: 100ms;
+  transition-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+  transition-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+  transition-delay: 300ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+  transition-delay: 500ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+  transition-delay: 700ms;
+}
+
+/* ====================================================================
+   Hover State Transitions
+   ==================================================================== */
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 15px 50px var(--shadow-outer);
+}
+
+.hover-brightness:hover {
+  filter: brightness(1.1);
+}
+
+/* ====================================================================
+   Reduced Motion Support
+   ==================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-fadeIn,
+  .animate-fadeOut,
+  .animate-fadeInUp,
+  .animate-fadeInDown,
+  .animate-fadeInLeft,
+  .animate-fadeInRight,
+  .animate-slideInUp,
+  .animate-slideInDown,
+  .animate-slideInLeft,
+  .animate-slideInRight,
+  .animate-scaleIn,
+  .animate-scaleOut,
+  .animate-bounce,
+  .animate-pulse,
+  .animate-pulseScale,
+  .animate-spin,
+  .animate-spinReverse,
+  .animate-glow,
+  .animate-glowText,
+  .animate-swing,
+  .animate-wiggle,
+  .animate-ring {
+    animation: none;
+  }
+}

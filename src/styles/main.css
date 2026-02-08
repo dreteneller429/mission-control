@@ -1,0 +1,84 @@
+/* ====================================================================
+   MAIN.CSS - Main Stylesheet Import Index
+   ==================================================================== */
+
+/* Import all CSS modules in correct order */
+
+/* 1. Reset & Base Styles */
+@import url('./reset.css');
+
+/* 2. Theme & Color Palette */
+@import url('./theme.css');
+
+/* 3. Glass Effects & Glassmorphism */
+@import url('./glass.css');
+
+/* 4. Layout System & Grid */
+@import url('./layout.css');
+
+/* 5. Components */
+@import url('./components.css');
+
+/* 6. Animations & Transitions */
+@import url('./animations.css');
+
+/* ====================================================================
+   Global Overrides & Fine-tuning
+   ==================================================================== */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Selection colors */
+::selection {
+  background-color: var(--accent-blue);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--accent-blue);
+  color: white;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-glass-highlight);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-color: var(--border-glass-highlight) var(--bg-deep);
+  scrollbar-width: thin;
+}
