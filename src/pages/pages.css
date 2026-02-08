@@ -382,11 +382,12 @@
    ==================================================================== */
 
 .dashboard-container {
-  flex: 1;
+  width: calc(100% - 280px);
   margin-left: 280px;
   padding: 32px;
   overflow-y: auto;
   animation: fadeIn 0.5s ease;
+  min-height: 100vh;
 }
 
 .dashboard-section {
@@ -847,6 +848,7 @@
   }
 
   .dashboard-container {
+    width: calc(100% - 240px);
     margin-left: 240px;
     padding: 24px;
   }
@@ -890,6 +892,7 @@
   }
 
   .dashboard-container {
+    width: 100%;
     margin-left: 0;
     padding: 80px 16px 32px 16px;
   }
@@ -922,6 +925,7 @@
   }
 
   .dashboard-container {
+    width: 100%;
     padding: 80px 12px 24px 12px;
   }
 
