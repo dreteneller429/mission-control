@@ -11,6 +11,7 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
+  flex-direction: row;
 }
 
 /* ====================================================================
@@ -378,16 +379,39 @@
 }
 
 /* ====================================================================
-   DASHBOARD MAIN CONTENT
+   Navigation Container (Fixed Sidebar)
    ==================================================================== */
 
-.dashboard-container {
-  width: calc(100% - 280px);
+#navigationContainer {
+  width: 0;
+  height: 0;
+  flex: 0;
+  overflow: visible;
+}
+
+/* ====================================================================
+   DASHBOARD MAIN CONTENT & PAGE CONTAINERS
+   ==================================================================== */
+
+/* Base styling for all page containers */
+.dashboard-container,
+.documents-container,
+.journal-container,
+.intelligence-container,
+.agents-container,
+.clients-container,
+.cron-jobs-container,
+.api-usage-container,
+.docudigest-container,
+.weekly-recaps-container,
+.workshop-page {
   margin-left: 280px;
   padding: 32px;
   overflow-y: auto;
+  overflow-x: hidden;
   animation: fadeIn 0.5s ease;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .dashboard-section {
@@ -847,7 +871,17 @@
     width: 240px;
   }
 
-  .dashboard-container {
+  .dashboard-container,
+  .documents-container,
+  .journal-container,
+  .intelligence-container,
+  .agents-container,
+  .clients-container,
+  .cron-jobs-container,
+  .api-usage-container,
+  .docudigest-container,
+  .weekly-recaps-container,
+  .workshop-page {
     width: calc(100% - 240px);
     margin-left: 240px;
     padding: 24px;
@@ -891,7 +925,17 @@
     justify-content: center;
   }
 
-  .dashboard-container {
+  .dashboard-container,
+  .documents-container,
+  .journal-container,
+  .intelligence-container,
+  .agents-container,
+  .clients-container,
+  .cron-jobs-container,
+  .api-usage-container,
+  .docudigest-container,
+  .weekly-recaps-container,
+  .workshop-page {
     width: 100%;
     margin-left: 0;
     padding: 80px 16px 32px 16px;
@@ -924,7 +968,17 @@
     max-width: 280px;
   }
 
-  .dashboard-container {
+  .dashboard-container,
+  .documents-container,
+  .journal-container,
+  .intelligence-container,
+  .agents-container,
+  .clients-container,
+  .cron-jobs-container,
+  .api-usage-container,
+  .docudigest-container,
+  .weekly-recaps-container,
+  .workshop-page {
     width: 100%;
     padding: 80px 12px 24px 12px;
   }
