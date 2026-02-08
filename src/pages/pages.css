@@ -338,11 +338,18 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
+  outline: none;
 }
 
 .nav-link:hover {
   color: var(--text-primary);
   background: var(--bg-glass-hover);
+  outline: none;
+}
+
+.nav-link:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
 }
 
 .nav-link.active {
@@ -350,6 +357,7 @@
   background: var(--accent-blue-light);
   border-left: 3px solid var(--accent-blue);
   padding-left: 13px;
+  outline: none;
 }
 
 .nav-icon {
