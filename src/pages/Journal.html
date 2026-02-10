@@ -24,11 +24,10 @@
   <section class="journal-content">
     <div class="journal-entry-wrapper">
       <!-- Entry loaded dynamically -->
-      <div id="journalEntryContainer" class="journal-entry-display">
-        <div class="loading-spinner">
-          <div class="spinner"></div>
-          <p>Loading entry...</p>
-        </div>
+      <div id="journalEntryContainer" class="journal-entry-display empty">
+        <div class="empty-icon">📖</div>
+        <h3>No entry yet</h3>
+        <p>Start writing your first journal entry for today</p>
       </div>
     </div>
   </section>
@@ -62,6 +61,8 @@
   padding: 2rem;
   max-width: 100%;
   width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .journal-header {
@@ -148,6 +149,8 @@
   border-radius: var(--radius-lg);
   color: var(--text-primary);
   line-height: 1.8;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .journal-entry-display.empty {
@@ -157,34 +160,23 @@
   justify-content: center;
   min-height: 400px;
   color: var(--text-secondary);
+  gap: 1rem;
 }
 
-.journal-entry-display.empty-icon {
+.journal-entry-display.empty .empty-icon {
   font-size: 3rem;
-  margin-bottom: 1rem;
   opacity: 0.5;
 }
 
-.loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  height: 400px;
+.journal-entry-display.empty h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-glass);
-  border-top-color: var(--accent-blue);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.journal-entry-display.empty p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .journal-entry-display h2 {

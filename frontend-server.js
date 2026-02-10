@@ -14,8 +14,8 @@ const PORT = process.env.FRONTEND_PORT || 8081;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from src directory
-app.use(express.static(path.join(__dirname, 'src')));
+// Serve static files from src directory (disable directory listing)
+app.use(express.static(path.join(__dirname, 'src'), { index: false }));
 
 // Serve pages directory
 app.use('/pages', express.static(path.join(__dirname, 'src/pages')));

@@ -28,9 +28,10 @@
   <section class="clients-grid-section">
     <div class="clients-grid" id="clientsGrid">
       <!-- Client cards will be loaded here -->
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Loading clients...</p>
+      <div class="empty-state">
+        <div class="empty-icon">💼</div>
+        <p>No clients yet</p>
+        <p class="empty-hint">Add your first client to get started</p>
       </div>
     </div>
   </section>
@@ -148,26 +149,6 @@
   gap: 1.5rem;
 }
 
-.loading-spinner {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  height: 400px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-glass);
-  border-top-color: var(--accent-blue);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
   to { transform: rotate(360deg); }
 }
 
