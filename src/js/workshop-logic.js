@@ -125,30 +125,34 @@ class WorkshopManager {
   }
 
   /**
-   * Main render function
+   * Main render function - NOW ASYNC to fetch real data from API
    */
-  render() {
-    const data = WorkshopAPI.getTasks();
+  async render() {
+    try {
+      const data = await WorkshopAPI.getTasks();
 
-    // Filter by search query
-    let queued = data.queued;
-    let active = data.active;
-    let completed = data.completed;
+      // Filter by search query
+      let queued = data.queued;
+      let active = data.active;
+      let completed = data.completed;
 
-    if (this.searchQuery) {
-      const filtered = WorkshopAPI.searchTasks(this.searchQuery);
-      queued = queued.filter(t => filtered.find(f => f.id === t.id));
-      active = active.filter(t => filtered.find(f => f.id === t.id));
-      completed = completed.filter(t => filtered.find(f => f.id === t.id));
+      if (this.searchQuery) {
+        const filtered = WorkshopAPI.searchTasks(this.searchQuery);
+        queued = queued.filter(t => filtered.find(f => f.id === t.id));
+        active = active.filter(t => filtered.find(f => f.id === t.id));
+        completed = completed.filter(t => filtered.find(f => f.id === t.id));
+      }
+
+      // Render tasks
+      this.renderColumn(this.queuedContainer, queued, 'queued');
+      this.renderColumn(this.activeContainer, active, 'active');
+      this.renderColumn(this.completedContainer, completed, 'completed');
+
+      // Update stats
+      this.updateStats(data.stats);
+    } catch (error) {
+      console.error('Error rendering Workshop:', error);
     }
-
-    // Render tasks
-    this.renderColumn(this.queuedContainer, queued, 'queued');
-    this.renderColumn(this.activeContainer, active, 'active');
-    this.renderColumn(this.completedContainer, completed, 'completed');
-
-    // Update stats
-    this.updateStats(data.stats);
   }
 
   /**
@@ -358,51 +362,51 @@ class WorkshopManager {
   }
 
   /**
-   * Handle modal action button click
+   * Handle modal action button click - NOW ASYNC
    */
-  handleModalAction() {
+  async handleModalAction() {
     if (!this.selectedTask) return;
 
     if (this.selectedTask.status === 'queued') {
-      this.startTask(this.selectedTask.id);
+      await this.startTask(this.selectedTask.id);
     } else if (this.selectedTask.status === 'active') {
-      this.completeTask(this.selectedTask.id);
+      await this.completeTask(this.selectedTask.id);
     }
 
     this.closeModal();
   }
 
   /**
-   * Start a task
+   * Start a task - NOW ASYNC
    */
-  startTask(taskId) {
+  async startTask(taskId) {
     try {
-      WorkshopAPI.startTask(taskId);
-      this.render();
+      await WorkshopAPI.startTask(taskId);
+      await this.render();
     } catch (error) {
       console.error('Error starting task:', error);
     }
   }
 
   /**
-   * Complete a task
+   * Complete a task - NOW ASYNC
    */
-  completeTask(taskId) {
+  async completeTask(taskId) {
     try {
-      WorkshopAPI.completeTask(taskId);
-      this.render();
+      await WorkshopAPI.completeTask(taskId);
+      await this.render();
     } catch (error) {
       console.error('Error completing task:', error);
     }
   }
 
   /**
-   * Delete a task
+   * Delete a task - NOW ASYNC
    */
-  deleteTask(taskId) {
+  async deleteTask(taskId) {
     try {
-      WorkshopAPI.deleteTask(taskId);
-      this.render();
+      await WorkshopAPI.deleteTask(taskId);
+      await this.render();
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -499,56 +503,64 @@ class WorkshopManager {
   }
 
   /**
-   * Start auto-refresh (every 2 seconds for responsive updates)
+   * Start auto-refresh (every 2 seconds for responsive updates) - NOW ASYNC
    */
   startAutoRefresh() {
-    this.refreshInterval = setInterval(() => {
-      this.render();
+    this.refreshInterval = setInterval(async () => {
+      try {
+        await this.render();
 
-      // Update live feed if visible (faster refresh for real-time feel)
-      if (this.currentView === 'live-feed') {
-        this.renderLiveFeed();
-        // Auto-scroll to bottom for new events
-        setTimeout(() => {
-          if (this.liveFeedList) {
-            this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
-          }
-        }, 100);
+        // Update live feed if visible (faster refresh for real-time feel)
+        if (this.currentView === 'live-feed') {
+          this.renderLiveFeed();
+          // Auto-scroll to bottom for new events
+          setTimeout(() => {
+            if (this.liveFeedList) {
+              this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Auto-refresh error:', error);
       }
     }, 2000);
   }
 
   /**
-   * Start simulation of progress updates and live feed events
+   * Start simulation of progress updates and live feed events - NOW ASYNC
    */
   startSimulation() {
-    this.simulationInterval = setInterval(() => {
-      // Simulate progress on active tasks
-      WorkshopAPI.simulateProgress();
+    this.simulationInterval = setInterval(async () => {
+      try {
+        // Simulate progress on active tasks
+        await WorkshopAPI.simulateProgress();
 
-      // Auto-pickup if needed (move next task to active)
-      const pickedUp = WorkshopAPI.autoPickupTask();
+        // Auto-pickup if needed (move next task to active)
+        const pickedUp = await WorkshopAPI.autoPickupTask();
 
-      // Update UI
-      this.render();
+        // Update UI
+        await this.render();
 
-      // Always update live feed if in that view (for real-time feel)
-      if (this.currentView === 'live-feed') {
-        this.renderLiveFeed();
-        setTimeout(() => {
-          if (this.liveFeedList) {
-            this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
-          }
-        }, 100);
-      }
-
-      // Update modal if open
-      if (this.selectedTask && this.modal.classList.contains('active')) {
-        const updatedTask = WorkshopAPI.getTask(this.selectedTask.id);
-        if (updatedTask) {
-          this.selectedTask = updatedTask;
-          this.openModal(updatedTask); // Re-render modal
+        // Always update live feed if in that view (for real-time feel)
+        if (this.currentView === 'live-feed') {
+          this.renderLiveFeed();
+          setTimeout(() => {
+            if (this.liveFeedList) {
+              this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+            }
+          }, 100);
         }
+
+        // Update modal if open
+        if (this.selectedTask && this.modal.classList.contains('active')) {
+          const updatedTask = await WorkshopAPI.getTask(this.selectedTask.id);
+          if (updatedTask) {
+            this.selectedTask = updatedTask;
+            this.openModal(updatedTask); // Re-render modal
+          }
+        }
+      } catch (error) {
+        console.error('Simulation error:', error);
       }
     }, 2000); // Simulate every 2 seconds for responsive feel
   }
