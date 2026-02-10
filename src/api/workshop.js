@@ -13,11 +13,12 @@
 const API_BASE_URL = '/api/workshop';
 const USE_BACKEND = typeof fetch !== 'undefined'; // Will use backend if available
 
-// Mock task data store (fallback)
+// Mock task data store (fallback) - 17 tasks: 1 active, 2 completed, 14 queued
 let mockTaskStore = {
   tasks: [
+    // COMPLETED (2)
     {
-      id: 'phase-1',
+      id: 'task-001-completed',
       title: 'Phase 1: Glassmorphism Framework',
       description: 'Design and implement the complete glassmorphism CSS framework with theme variables, glass effects, and component library.',
       tags: ['building', 'ui'],
@@ -35,12 +36,32 @@ let mockTaskStore = {
       ]
     },
     {
-      id: 'phase-2',
-      title: 'Phase 2: Navigation + Dashboard',
-      description: 'Build frosted glass sidebar with DAVE status, main dashboard with stat cards, and responsive navigation.',
+      id: 'task-002-completed',
+      title: 'Navigation Sidebar Design',
+      description: 'Build frosted glass sidebar with navigation items, collapse/expand animations, and responsive behavior.',
       tags: ['building', 'ui'],
       priority: 'high',
-      progress: 65,
+      progress: 100,
+      status: 'completed',
+      created_at: '2026-02-07T14:00:00Z',
+      started_at: '2026-02-07T14:15:00Z',
+      completed_at: '2026-02-07T16:00:00Z',
+      activity_log: [
+        { timestamp: '14:00 EST', event: 'Task created by User' },
+        { timestamp: '14:15 EST', event: 'Task started by DAVE' },
+        { timestamp: '15:00 EST', event: 'Progress updated to 50%' },
+        { timestamp: '16:00 EST', event: 'Task completed' }
+      ]
+    },
+
+    // ACTIVE (1)
+    {
+      id: 'task-003-active',
+      title: 'Dashboard Statistics Cards',
+      description: 'Build dashboard with real-time stat cards showing system metrics, task counts, and performance indicators.',
+      tags: ['building', 'ui'],
+      priority: 'high',
+      progress: 72,
       status: 'active',
       created_at: '2026-02-08T18:00:00Z',
       started_at: '2026-02-08T18:35:00Z',
@@ -49,67 +70,219 @@ let mockTaskStore = {
         { timestamp: '18:35 EST', event: 'Task started by DAVE' },
         { timestamp: '18:40 EST', event: 'Progress updated to 25%' },
         { timestamp: '18:45 EST', event: 'Progress updated to 50%' },
-        { timestamp: '18:50 EST', event: 'Progress updated to 65%' }
+        { timestamp: '18:50 EST', event: 'Progress updated to 72%' }
       ]
     },
+
+    // QUEUED (14)
     {
-      id: 'phase-3',
-      title: 'Phase 3: Workshop Page (Task Queue)',
-      description: 'Create the Workshop page with three-column task queue layout, auto-pickup logic, task detail modal, and live feed view.',
+      id: 'task-004-queued',
+      title: 'Workshop Page Layout',
+      description: 'Create three-column task queue layout with drag-and-drop reordering and responsive design.',
       tags: ['building', 'deep work'],
-      priority: 'high',
-      progress: 30,
+      priority: 'critical',
+      progress: 0,
       status: 'queued',
-      created_at: '2026-02-08T18:00:00Z',
+      created_at: '2026-02-08T19:00:00Z',
       started_at: null,
       completed_at: null,
       activity_log: [
-        { timestamp: '18:00 EST', event: 'Task created by User' }
+        { timestamp: '19:00 EST', event: 'Task created by User' }
       ]
     },
     {
-      id: 'phase-4',
-      title: 'Phase 4: API Integration',
-      description: 'Implement real backend API endpoints for task management, socket connections for live updates, and heartbeat system.',
+      id: 'task-005-queued',
+      title: 'Task Auto-Pickup Logic',
+      description: 'Implement auto-pickup mechanism: when Active column is empty and Queued has items, auto-move highest priority task.',
+      tags: ['building', 'standard'],
+      priority: 'critical',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:05:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:05 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-006-queued',
+      title: 'Task Detail Modal',
+      description: 'Build modal dialog showing full task details including description, timeline, progress, and activity log.',
+      tags: ['building', 'ui'],
+      priority: 'high',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:10:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:10 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-007-queued',
+      title: 'Live Feed Stream Implementation',
+      description: 'Wire live feed to show real-time task events: STARTED, progress updates, COMPLETED, and FAILED events.',
       tags: ['building', 'standard'],
       priority: 'high',
       progress: 0,
       status: 'queued',
-      created_at: '2026-02-08T18:00:00Z',
+      created_at: '2026-02-08T19:15:00Z',
       started_at: null,
       completed_at: null,
       activity_log: [
-        { timestamp: '18:00 EST', event: 'Task created by User' }
+        { timestamp: '19:15 EST', event: 'Task created by User' }
       ]
     },
     {
-      id: 'research-1',
+      id: 'task-008-queued',
+      title: 'API Integration for Workshop',
+      description: 'Connect Workshop page to backend API endpoints for real-time task updates and mutations.',
+      tags: ['building', 'standard'],
+      priority: 'high',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:20:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:20 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-009-queued',
       title: 'Research: iOS Design Patterns',
-      description: 'Study latest iOS 17+ design patterns, glassmorphism trends, and SwiftUI animations for inspiration.',
+      description: 'Study latest iOS 17+ design patterns, glassmorphism trends, and SwiftUI animations for UI inspiration.',
       tags: ['research', 'standard'],
       priority: 'medium',
       progress: 0,
       status: 'queued',
-      created_at: '2026-02-08T18:00:00Z',
+      created_at: '2026-02-08T19:25:00Z',
       started_at: null,
       completed_at: null,
       activity_log: [
-        { timestamp: '18:00 EST', event: 'Task created by User' }
+        { timestamp: '19:25 EST', event: 'Task created by User' }
       ]
     },
     {
-      id: 'bug-fix-1',
-      title: 'Fix: Modal Focus Trap',
-      description: 'Implement proper focus management for modal dialogs to ensure accessibility and proper keyboard navigation.',
+      id: 'task-010-queued',
+      title: 'Modal Focus Trap Implementation',
+      description: 'Implement proper focus management for modal dialogs to ensure accessibility and keyboard navigation.',
       tags: ['blocker', 'building'],
       priority: 'critical',
       progress: 0,
       status: 'queued',
-      created_at: '2026-02-08T18:10:00Z',
+      created_at: '2026-02-08T19:30:00Z',
       started_at: null,
       completed_at: null,
       activity_log: [
-        { timestamp: '18:10 EST', event: 'Task created by User' }
+        { timestamp: '19:30 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-011-queued',
+      title: 'Search and Filter Tasks',
+      description: 'Add search functionality to filter tasks by name, description, and tags. Include real-time filtering.',
+      tags: ['building', 'ui'],
+      priority: 'medium',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:35:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:35 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-012-queued',
+      title: 'Task Progress Animation',
+      description: 'Add smooth progress bar animations and real-time progress updates with visual feedback.',
+      tags: ['building', 'ui'],
+      priority: 'medium',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:40:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:40 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-013-queued',
+      title: 'Performance Optimization',
+      description: 'Optimize rendering, implement virtual scrolling for large task lists, and minimize re-renders.',
+      tags: ['building', 'deep work'],
+      priority: 'medium',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:45:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:45 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-014-queued',
+      title: 'Mobile Responsive Design',
+      description: 'Ensure Workshop page works perfectly on mobile devices with touch-friendly controls and layout.',
+      tags: ['building', 'ui'],
+      priority: 'medium',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:50:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:50 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-015-queued',
+      title: 'Error Handling & Retry Logic',
+      description: 'Implement comprehensive error handling, toast notifications, and automatic retry mechanisms.',
+      tags: ['building', 'standard'],
+      priority: 'medium',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T19:55:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '19:55 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-016-queued',
+      title: 'Unit Tests for Workshop',
+      description: 'Write comprehensive unit tests for all Workshop components, API interactions, and state management.',
+      tags: ['testing', 'standard'],
+      priority: 'low',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T20:00:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '20:00 EST', event: 'Task created by User' }
+      ]
+    },
+    {
+      id: 'task-017-queued',
+      title: 'Documentation & Deployment',
+      description: 'Write comprehensive documentation for Workshop API and deployment guide for production.',
+      tags: ['documentation', 'standard'],
+      priority: 'low',
+      progress: 0,
+      status: 'queued',
+      created_at: '2026-02-08T20:05:00Z',
+      started_at: null,
+      completed_at: null,
+      activity_log: [
+        { timestamp: '20:05 EST', event: 'Task created by User' }
       ]
     }
   ],

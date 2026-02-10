@@ -423,42 +423,48 @@ class WorkshopManager {
   }
 
   /**
-   * Render live feed
+   * Render live feed with real task events
    */
   renderLiveFeed() {
     const events = WorkshopAPI.getLiveEvents(50);
 
+    // Show placeholder if no events yet
     if (events.length === 0) {
       this.liveFeedList.innerHTML = `
         <div class="feed-item feed-placeholder">
           <span class="feed-time">--:-- EST</span>
           <span class="feed-task">Waiting for activity...</span>
-          <span class="feed-event">--</span>
+          <span class="feed-event">Monitoring for task events</span>
         </div>
       `;
       return;
     }
 
+    // Only re-render if new events added to avoid flickering
+    const existingCount = this.liveFeedList.children.length;
+    if (existingCount === events.length && existingCount > 0 && this.liveFeedList.children[0].className.includes('feed-placeholder')) {
+      // First time rendering, clear placeholder
+      this.liveFeedList.innerHTML = '';
+    } else if (existingCount === events.length && existingCount > 0) {
+      // No new events, don't re-render
+      return;
+    } else if (existingCount > 0 && !this.liveFeedList.children[0].className.includes('feed-placeholder')) {
+      // Append new events only
+      const startIndex = existingCount;
+      for (let i = startIndex; i < events.length; i++) {
+        const event = events[i];
+        const item = this.createFeedItem(event);
+        this.liveFeedList.appendChild(item);
+      }
+      // Auto-scroll to bottom
+      this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+      return;
+    }
+
+    // Full render on first load
     this.liveFeedList.innerHTML = '';
     events.forEach(event => {
-      const item = document.createElement('div');
-      item.className = `feed-item feed-${event.eventType}`;
-
-      const timeEl = document.createElement('span');
-      timeEl.className = 'feed-time';
-      timeEl.textContent = event.timestamp;
-
-      const taskEl = document.createElement('span');
-      taskEl.className = 'feed-task';
-      taskEl.textContent = event.taskName;
-
-      const eventEl = document.createElement('span');
-      eventEl.className = 'feed-event';
-      eventEl.textContent = event.eventLabel;
-
-      item.appendChild(timeEl);
-      item.appendChild(taskEl);
-      item.appendChild(eventEl);
+      const item = this.createFeedItem(event);
       this.liveFeedList.appendChild(item);
     });
 
@@ -467,33 +473,74 @@ class WorkshopManager {
   }
 
   /**
-   * Start auto-refresh (every 5 seconds)
+   * Create a feed item element
+   */
+  createFeedItem(event) {
+    const item = document.createElement('div');
+    item.className = `feed-item feed-${event.eventType}`;
+
+    const timeEl = document.createElement('span');
+    timeEl.className = 'feed-time';
+    timeEl.textContent = event.timestamp;
+
+    const taskEl = document.createElement('span');
+    taskEl.className = 'feed-task';
+    taskEl.textContent = event.taskName;
+
+    const eventEl = document.createElement('span');
+    eventEl.className = 'feed-event';
+    eventEl.textContent = event.eventLabel;
+
+    item.appendChild(timeEl);
+    item.appendChild(taskEl);
+    item.appendChild(eventEl);
+
+    return item;
+  }
+
+  /**
+   * Start auto-refresh (every 2 seconds for responsive updates)
    */
   startAutoRefresh() {
     this.refreshInterval = setInterval(() => {
       this.render();
 
-      // Update live feed if visible
+      // Update live feed if visible (faster refresh for real-time feel)
       if (this.currentView === 'live-feed') {
         this.renderLiveFeed();
-        this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+        // Auto-scroll to bottom for new events
+        setTimeout(() => {
+          if (this.liveFeedList) {
+            this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+          }
+        }, 100);
       }
-    }, 5000);
+    }, 2000);
   }
 
   /**
-   * Start simulation of progress updates
+   * Start simulation of progress updates and live feed events
    */
   startSimulation() {
     this.simulationInterval = setInterval(() => {
       // Simulate progress on active tasks
       WorkshopAPI.simulateProgress();
 
-      // Auto-pickup if needed
-      WorkshopAPI.autoPickupTask();
+      // Auto-pickup if needed (move next task to active)
+      const pickedUp = WorkshopAPI.autoPickupTask();
 
       // Update UI
       this.render();
+
+      // Always update live feed if in that view (for real-time feel)
+      if (this.currentView === 'live-feed') {
+        this.renderLiveFeed();
+        setTimeout(() => {
+          if (this.liveFeedList) {
+            this.liveFeedList.scrollTop = this.liveFeedList.scrollHeight;
+          }
+        }, 100);
+      }
 
       // Update modal if open
       if (this.selectedTask && this.modal.classList.contains('active')) {
@@ -503,7 +550,7 @@ class WorkshopManager {
           this.openModal(updatedTask); // Re-render modal
         }
       }
-    }, 3000); // Simulate every 3 seconds
+    }, 2000); // Simulate every 2 seconds for responsive feel
   }
 
   /**
