@@ -14,18 +14,18 @@
     <div class="documents-left-panel">
       <!-- Search Bar -->
       <div class="search-container">
+        <span class="search-icon">🔍</span>
         <input 
           type="text" 
           id="docSearch" 
           class="doc-search-input" 
           placeholder="Search documents..."
         />
-        <span class="search-icon">🔍</span>
       </div>
 
       <!-- Category Filters -->
       <div class="category-filters">
-        <button class="category-btn active" data-category="all">All Categories</button>
+        <button class="category-btn active" data-category="all">All</button>
         <button class="category-btn" data-category="sub-agent-reports">Sub-Agent Reports</button>
         <button class="category-btn" data-category="sureclose">SureClose</button>
         <button class="category-btn" data-category="peachstone">Peachstone</button>
@@ -113,7 +113,7 @@
 
 .doc-search-input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
   background: var(--bg-glass);
   backdrop-filter: var(--blur-md);
   border: 1px solid var(--border-glass);
@@ -121,6 +121,7 @@
   color: var(--text-primary);
   font-size: 0.95rem;
   transition: all var(--duration-normal) var(--ease-smooth);
+  box-sizing: border-box;
 }
 
 .doc-search-input::placeholder {
@@ -136,11 +137,13 @@
 
 .search-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 0.875rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
   pointer-events: none;
+  z-index: 1;
+  font-size: 1rem;
 }
 
 .category-filters {
@@ -242,13 +245,12 @@
   white-space: nowrap;
 }
 
-.category-development { background: var(--accent-blue); }
-.category-sub-agent { background: var(--accent-purple); }
-.category-real-estate { background: var(--accent-green); }
-.category-planning { background: var(--accent-orange); }
-.category-intelligence { background: var(--accent-teal); }
-.category-research { background: #FF6B6B; }
-.category-client { background: #4D96FF; }
+.category-sub-agent-reports { background: var(--accent-purple); }
+.category-sureclose { background: var(--accent-blue); }
+.category-peachstone { background: var(--accent-green); }
+.category-personal { background: var(--accent-teal); }
+.category-training { background: var(--accent-orange); }
+.category-misc { background: #FF6B6B; }
 
 .documents-right-panel {
   background: var(--bg-glass);

@@ -10,6 +10,7 @@
 
     <!-- Search Bar -->
     <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
       <input 
         type="text" 
         class="search-input" 
@@ -17,7 +18,6 @@
         placeholder="Search reports..."
         aria-label="Search intelligence reports"
       >
-      <span class="search-icon">🔍</span>
     </div>
 
     <!-- Category Filters -->
@@ -189,13 +189,14 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 12px 10px 36px;
+  padding: 10px 12px 10px 38px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   color: #fff;
   font-size: 14px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .search-input::placeholder {
@@ -211,11 +212,13 @@
 
 .search-icon {
   position: absolute;
-  left: 24px;
+  left: 28px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
   color: rgba(255, 255, 255, 0.5);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Category Filters */
