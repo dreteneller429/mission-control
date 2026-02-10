@@ -6,68 +6,103 @@ const storage = require('../db/storage');
 storage.initCollection('clients', [
   {
     id: 'client-8unit',
-    name: '8-Unit Portfolio',
-    type: 'Real Estate',
+    name: 'Fort Valley 8-Unit',
+    company: 'Valley Properties LLC',
+    email: 'contact@valleyprops.com',
     status: 'active',
-    deals: 8,
-    value: '$2.4M',
-    roi: '12.5%',
-    manager: 'Team A',
+    mrr: 24000,
+    lastActivity: '2026-02-08T14:30:00Z',
+    nextAction: 'Q1 portfolio review',
+    description: 'Multi-unit residential property portfolio in Fort Valley region',
+    interactions: [
+      { date: '2026-02-08T14:30:00Z', type: 'Email' },
+      { date: '2026-02-05T10:15:00Z', type: 'Phone Call' }
+    ],
+    documents: ['Portfolio Analysis', 'Investment Summary'],
     created_at: '2025-06-15T10:00:00Z'
   },
   {
     id: 'client-7unit',
-    name: '7-Unit Portfolio',
-    type: 'Real Estate',
+    name: 'Metro 7-Unit Complex',
+    company: 'Metro Residential Partners',
+    email: 'info@metroresidential.com',
     status: 'active',
-    deals: 7,
-    value: '$1.8M',
-    roi: '11.2%',
-    manager: 'Team B',
+    mrr: 18000,
+    lastActivity: '2026-02-07T09:45:00Z',
+    nextAction: 'Refinancing proposal',
+    description: 'Seven-unit apartment complex in metropolitan area',
+    interactions: [
+      { date: '2026-02-07T09:45:00Z', type: 'Meeting' },
+      { date: '2026-02-01T16:20:00Z', type: 'Email' }
+    ],
+    documents: ['Property Specs', 'Financial Statements'],
     created_at: '2025-07-20T10:00:00Z'
   },
   {
     id: 'client-159unit',
-    name: '159-Unit Development',
-    type: 'Real Estate',
-    status: 'planning',
-    deals: 159,
-    value: '$45.8M',
-    roi: '15.3%',
-    manager: 'Executive Team',
+    name: '159-Unit Peachstone Dev',
+    company: 'Peachstone Development',
+    email: 'deals@peachstone.com',
+    status: 'prospect',
+    mrr: 125000,
+    lastActivity: '2026-02-06T13:00:00Z',
+    nextAction: 'Contract negotiation',
+    description: 'Large-scale residential development project with 159 units',
+    interactions: [
+      { date: '2026-02-06T13:00:00Z', type: 'Meeting' }
+    ],
+    documents: ['Development Plan', 'Market Analysis', 'Financial Model'],
     created_at: '2025-09-01T10:00:00Z'
   },
   {
     id: 'client-mario',
-    name: 'Mario Properties',
-    type: 'Real Estate',
+    name: 'Mario Properties Holdings',
+    company: 'Mario Properties',
+    email: 'mario@marioprops.com',
     status: 'active',
-    deals: 12,
-    value: '$3.2M',
-    roi: '10.8%',
-    manager: 'Mario',
+    mrr: 32000,
+    lastActivity: '2026-02-04T11:20:00Z',
+    nextAction: 'Monthly performance review',
+    description: 'Multi-property real estate holdings and management',
+    interactions: [
+      { date: '2026-02-04T11:20:00Z', type: 'Email' },
+      { date: '2026-01-28T15:45:00Z', type: 'Meeting' }
+    ],
+    documents: ['Portfolio Overview', 'Annual Report'],
     created_at: '2025-08-10T10:00:00Z'
   },
   {
     id: 'client-home-warranty',
-    name: 'Home Warranty Program',
-    type: 'Service',
+    name: 'Home Warranty Group',
+    company: 'National Home Warranty',
+    email: 'partnerships@homew.com',
     status: 'active',
-    deals: 450,
-    value: '$1.2M',
-    roi: '18.5%',
-    manager: 'Operations',
+    mrr: 12000,
+    lastActivity: '2026-02-03T08:30:00Z',
+    nextAction: 'Renewal negotiation',
+    description: 'Home warranty and protection program provider',
+    interactions: [
+      { date: '2026-02-03T08:30:00Z', type: 'Email' },
+      { date: '2026-01-25T14:00:00Z', type: 'Phone Call' }
+    ],
+    documents: ['Partnership Agreement', 'Performance Metrics'],
     created_at: '2025-10-05T10:00:00Z'
   },
   {
-    id: 'client-tanner',
-    name: 'Tanner Ventures',
-    type: 'Partnership',
+    id: 'client-sureclose',
+    name: 'SureClose Platform',
+    company: 'SureClose Tech Inc',
+    email: 'enterprise@sureclose.com',
     status: 'active',
-    deals: 8,
-    value: '$2.0M',
-    roi: '9.5%',
-    manager: 'Tanner',
+    mrr: 45000,
+    lastActivity: '2026-02-09T16:15:00Z',
+    nextAction: 'Feature roadmap planning',
+    description: 'Real estate closing and transaction management platform',
+    interactions: [
+      { date: '2026-02-09T16:15:00Z', type: 'Video Call' },
+      { date: '2026-02-02T10:00:00Z', type: 'Meeting' }
+    ],
+    documents: ['Contract', 'Service Level Agreement', 'Integration Specs'],
     created_at: '2025-11-12T10:00:00Z'
   }
 ]);

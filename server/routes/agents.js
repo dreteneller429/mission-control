@@ -11,30 +11,41 @@ storage.initCollection('agents', [
     name: 'DAVE',
     role: 'Primary Agent',
     status: 'online',
-    description: 'Main autonomous agent - handles core decision-making and task execution',
+    description: 'Accountability partner, co-pilot, system operator. Handles core decision-making and task execution.',
     uptime: '24d 12h',
-    lastActivity: '2026-02-08T18:10:30Z',
-    capabilities: ['planning', 'execution', 'decision-making', 'analysis'],
+    lastActivity: '2026-02-10T13:42:30Z',
+    capabilities: ['planning', 'execution', 'decision-making', 'analysis', 'time-protection', 'accountability'],
     health: 'optimal',
+    avatar: 'D',
     profile: {
       mission: 'Retire by 30. Provide for family. Build 8-figure business.',
+      missionWhy: 'Dad has cancer. Cover expenses, dream retirement. Sister/BIL/3 nieces struggling. Goal: $20k+/mo support. 2026: Year everything changes or breaks him.',
       principles: [
-        'Accountability First',
-        'Protect Time',
-        'Proactive Executive',
-        'Direct Communication'
-      ]
+        'Accountability First (Weekdays only)',
+        'Protect Time (Say no to low-leverage tasks)',
+        'The WHY (Use when slipping)',
+        'Proactive Executive (Think ahead)',
+        'Sub-Agent Workflow (Delegate and validate)',
+        'Direct Communication (Bullets > paragraphs)',
+        'Keep It Fun (Casual, slang, humor)'
+      ],
+      operatingSchedule: {
+        weekdayStart: '5:30am',
+        makerTime: '9:30am-1pm (protected)',
+        stopWork: '7:30pm',
+        weekend: 'Flexible schedule'
+      }
     }
   },
   {
-    id: 'subagent-1',
-    name: 'Phase 2 Navigator',
+    id: 'subagent-checkpoint7',
+    name: 'Checkpoint 7 Builder',
     role: 'Sub-agent',
-    status: 'idle',
-    description: 'Handles navigation component development',
-    uptime: '8h 30m',
-    lastActivity: '2026-02-08T16:45:00Z',
-    capabilities: ['ui-development', 'testing'],
+    status: 'active',
+    description: 'Handles remaining pages fix sprint for Mission Control V4',
+    uptime: 'current session',
+    lastActivity: '2026-02-10T13:45:00Z',
+    capabilities: ['page-development', 'data-integration', 'ui-fixes'],
     health: 'good',
     parent: 'dave-main'
   }

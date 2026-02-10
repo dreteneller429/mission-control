@@ -90,20 +90,55 @@ router.get('/:week', (req, res) => {
     // Try to find by ID first
     recap = storage.findById('weekly-recaps', param);
     
-    // If not found, try to find by week field (e.g., YYYY-Www or "Week X")
+    // If not found, try to find by week field or date
     if (!recap) {
       const recaps = storage.findAll('weekly-recaps');
-      recap = recaps.find(r => 
-        r.week === param || 
-        r.week.includes(param) ||
-        r.id.includes(param)
-      );
+      
+      // Try to match by week start date (YYYY-MM-DD format)
+      recap = recaps.find(r => {
+        try {
+          // Extract week start from period like "2026-02-01T00:00:00Z to 2026-02-07T23:59:59Z"
+          const periodStart = r.period ? r.period.split(' to ')[0] : '';
+          const recapWeekStart = periodStart.split('T')[0]; // Get YYYY-MM-DD
+          return recapWeekStart === param;
+        } catch (e) {
+          return false;
+        }
+      });
+      
+      // If still not found, try other matching patterns
+      if (!recap) {
+        recap = recaps.find(r => 
+          r.week === param || 
+          r.week.includes(param) ||
+          r.id.includes(param)
+        );
+      }
     }
     
+    // If still not found, return empty state instead of 404
     if (!recap) {
-      return res.status(404).json({ error: 'Weekly recap not found' });
+      return res.json({
+        tasksCompletedCount: 0,
+        tasksCompleted: [],
+        intelligenceReports: 0,
+        decisions: [],
+        cronJobsExecuted: 0,
+        issues: [],
+        recommendations: []
+      });
     }
-    res.json(recap);
+    
+    // Transform to format expected by frontend
+    res.json({
+      tasksCompletedCount: recap.tasks_completed,
+      tasksCompleted: recap.highlights || [],
+      intelligenceReports: 0,
+      decisions: [],
+      cronJobsExecuted: 0,
+      issues: [],
+      recommendations: recap.next_week_goals || []
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

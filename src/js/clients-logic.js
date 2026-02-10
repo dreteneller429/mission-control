@@ -42,20 +42,23 @@ class ClientsManager {
 
   async loadClients() {
     const grid = document.getElementById('clientsGrid');
-    grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading clients...</p></div>';
 
     try {
       const response = await fetch('/api/clients');
       if (response.ok) {
         this.clients = await response.json();
         this.filteredClients = this.clients;
-        this.renderClients();
+        if (this.clients.length === 0) {
+          grid.innerHTML = '<div class="empty-state"><div class="empty-icon">💼</div><p>No clients added yet</p><p class="empty-hint">Start by adding your first client</p></div>';
+        } else {
+          this.renderClients();
+        }
       } else {
         throw new Error('Failed to load clients');
       }
     } catch (error) {
       console.error('Error loading clients:', error);
-      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading clients</p></div>';
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">💼</div><p>No clients added yet</p><p class="empty-hint">Add your first client to get started</p></div>';
     }
   }
 

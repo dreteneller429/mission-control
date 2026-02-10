@@ -24,20 +24,53 @@ class JournalManager {
     dateDisplay?.addEventListener('click', () => datePicker?.click());
     datePicker?.addEventListener('change', (e) => {
       if (e.target.value) {
-        this.currentDate = new Date(e.target.value);
-        this.updateDisplay();
+        const newDate = new Date(e.target.value);
+        if (this.isValidDate(newDate)) {
+          this.currentDate = newDate;
+          this.updateDisplay();
+        }
       }
     });
+    
+    // Set date picker constraints
+    if (datePicker) {
+      datePicker.min = '2026-01-01';
+      const today = new Date();
+      const todayStr = this.formatDateForFilename(today);
+      datePicker.max = todayStr;
+    }
+  }
+
+  isValidDate(date) {
+    const jan1_2026 = new Date('2026-01-01');
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    return date >= jan1_2026 && date <= today;
   }
 
   previousDay() {
-    this.currentDate.setDate(this.currentDate.getDate() - 1);
-    this.updateDisplay();
+    const jan1_2026 = new Date('2026-01-01');
+    const newDate = new Date(this.currentDate);
+    newDate.setDate(newDate.getDate() - 1);
+    
+    if (newDate >= jan1_2026) {
+      this.currentDate = newDate;
+      this.updateDisplay();
+    }
   }
 
   nextDay() {
-    this.currentDate.setDate(this.currentDate.getDate() + 1);
-    this.updateDisplay();
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    const newDate = new Date(this.currentDate);
+    newDate.setDate(newDate.getDate() + 1);
+    
+    if (newDate <= today) {
+      this.currentDate = newDate;
+      this.updateDisplay();
+    }
   }
 
   formatDateForDisplay(date) {
@@ -75,6 +108,8 @@ class JournalManager {
   async updateDisplay() {
     const dateDisplay = document.getElementById('dateDisplay');
     const datePicker = document.getElementById('journalDatePicker');
+    const prevBtn = document.getElementById('prevDayBtn');
+    const nextBtn = document.getElementById('nextDayBtn');
     const dateStr = this.formatDateForFilename(this.currentDate);
 
     // Update date picker
@@ -87,6 +122,25 @@ class JournalManager {
       dateDisplay.textContent = this.formatDateForDisplay(this.currentDate);
     }
 
+    // Update button states
+    const jan1_2026 = new Date('2026-01-01');
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    if (prevBtn) {
+      const prevDate = new Date(this.currentDate);
+      prevDate.setDate(prevDate.getDate() - 1);
+      prevBtn.disabled = prevDate < jan1_2026;
+      prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+    }
+    
+    if (nextBtn) {
+      const nextDate = new Date(this.currentDate);
+      nextDate.setDate(nextDate.getDate() + 1);
+      nextBtn.disabled = nextDate > today;
+      nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+    }
+
     // Load and display entry
     await this.loadEntry(dateStr);
   }
@@ -95,27 +149,32 @@ class JournalManager {
     const container = document.getElementById('journalEntryContainer');
     if (!container) return;
 
-    container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading entry...</p></div>';
-
     try {
       const response = await fetch(`/api/journal/${dateStr}`);
       
       if (response.ok) {
         const data = await response.json();
-        const html = this.markdownToHTML(data.content);
-        container.innerHTML = html;
-        container.classList.remove('empty');
+        if (data.content) {
+          const html = this.markdownToHTML(data.content);
+          container.innerHTML = html;
+          container.classList.remove('empty');
+        } else {
+          this.showEmptyState(container);
+        }
       } else if (response.status === 404) {
-        container.innerHTML = '<div class="empty"><div class="empty-icon">📝</div><p>No entry for this date</p><p style="font-size: 0.9rem; color: var(--text-tertiary);">Start writing to create an entry</p></div>';
-        container.classList.add('empty');
+        this.showEmptyState(container);
       } else {
         throw new Error('Failed to load entry');
       }
     } catch (error) {
       console.error('Error loading entry:', error);
-      container.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>Unable to load entry</p></div>';
-      container.classList.add('empty');
+      this.showEmptyState(container);
     }
+  }
+
+  showEmptyState(container) {
+    container.innerHTML = '<div class="empty-icon">📖</div><h3>No journal entry yet</h3><p>Start writing your first journal entry for today</p>';
+    container.classList.add('empty');
   }
 
   initMarkdownParser() {

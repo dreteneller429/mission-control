@@ -13,6 +13,22 @@ class WeeklyRecapsManager {
   setupEventListeners() {
     document.getElementById('prevWeekBtn')?.addEventListener('click', () => this.previousWeek());
     document.getElementById('nextWeekBtn')?.addEventListener('click', () => this.nextWeek());
+    
+    // Set button states after initial display
+    setTimeout(() => this.updateButtonStates(), 100);
+  }
+
+  updateButtonStates() {
+    const nextWeekBtn = document.getElementById('nextWeekBtn');
+    if (nextWeekBtn) {
+      const nextWeekStart = new Date(this.currentWeekStart);
+      nextWeekStart.setDate(nextWeekStart.getDate() + 7);
+      const today = new Date();
+      
+      // Disable next button if we're already at the current week or beyond
+      nextWeekBtn.disabled = nextWeekStart > today;
+      nextWeekBtn.style.opacity = nextWeekBtn.disabled ? '0.5' : '1';
+    }
   }
 
   getWeekStart(date) {
@@ -28,8 +44,16 @@ class WeeklyRecapsManager {
   }
 
   nextWeek() {
-    this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
-    this.updateDisplay();
+    const nextWeekStart = new Date(this.currentWeekStart);
+    nextWeekStart.setDate(nextWeekStart.getDate() + 7);
+    const today = new Date();
+    
+    // Don't go beyond the current week
+    if (nextWeekStart <= today) {
+      this.currentWeekStart = nextWeekStart;
+      this.updateDisplay();
+      this.updateButtonStates();
+    }
   }
 
   formatWeekDisplay(date) {
@@ -54,8 +78,6 @@ class WeeklyRecapsManager {
     const container = document.getElementById('recapContent');
     if (!container) return;
 
-    container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading recap...</p></div>';
-
     try {
       const weekStr = this.formatDateForApi(this.currentWeekStart);
       const response = await fetch(`/api/weekly-recaps/${weekStr}`);
@@ -68,7 +90,7 @@ class WeeklyRecapsManager {
       }
     } catch (error) {
       console.error('Error loading recap:', error);
-      container.innerHTML = this.buildEmptyState('Error loading recap');
+      container.innerHTML = this.buildEmptyState();
     }
   }
 
