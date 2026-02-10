@@ -299,6 +299,48 @@ function loadPage(page) {
             }
           }).catch(error => console.error('Error initializing agents page:', error));
           break;
+        case 'journal':
+          // Load Journal-specific JavaScript
+          const journalScript = document.createElement('script');
+          journalScript.src = '../js/journal-logic.js';
+          document.body.appendChild(journalScript);
+          break;
+        case 'documents':
+          // Load Documents-specific JavaScript
+          const docsScript = document.createElement('script');
+          docsScript.src = '../js/documents-logic.js';
+          document.body.appendChild(docsScript);
+          break;
+        case 'cron':
+          // Load Cron Jobs-specific JavaScript
+          const cronScript = document.createElement('script');
+          cronScript.src = '../js/cron-logic.js';
+          document.body.appendChild(cronScript);
+          break;
+        case 'clients':
+          // Load Clients-specific JavaScript
+          const clientsScript = document.createElement('script');
+          clientsScript.src = '../js/clients-logic.js';
+          document.body.appendChild(clientsScript);
+          break;
+        case 'recaps':
+          // Load Weekly Recaps-specific JavaScript
+          const recapsScript = document.createElement('script');
+          recapsScript.src = '../js/recaps-logic.js';
+          document.body.appendChild(recapsScript);
+          break;
+        case 'api':
+          // Load API Usage-specific JavaScript
+          const apiScript = document.createElement('script');
+          apiScript.src = '../js/api-usage-logic.js';
+          document.body.appendChild(apiScript);
+          break;
+        case 'workshop':
+          // Load Workshop-specific JavaScript
+          const workshopScript = document.createElement('script');
+          workshopScript.src = '../js/workshop-logic.js';
+          document.body.appendChild(workshopScript);
+          break;
         case 'dashboard':
           setupStatCardClickHandlers();
           setupQuickLinkHandlers();
