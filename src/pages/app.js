@@ -7,8 +7,11 @@ const appState = {
   currentPage: 'dashboard',
   sidebarOpen: window.innerWidth > 768,
   sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
-  statusIndicator: 'online',
+  statusIndicator: 'idle',
   heartbeatCountdown: 12,
+  currentTask: 'Dashboard V4 Development',
+  isWorking: false,
+  subAgentsRunning: false,
 };
 
 // Status Statuses for cycling
@@ -40,6 +43,11 @@ function initApp() {
   startHeartbeat();
   startActivityFeed();
   setupStatusToggle();
+  
+  // Initialize status indicator to idle (yellow)
+  setTimeout(() => {
+    updateDaveStatus(false);
+  }, 500);
 }
 
 // ====================================================================
@@ -83,6 +91,47 @@ function loadDashboard() {
       initializeActivityFeed();
     })
     .catch(error => console.error('Error loading dashboard:', error));
+}
+
+// ====================================================================
+// Update DAVE Status Indicator (Green = Working, Yellow = Idle)
+// ====================================================================
+
+function updateDaveStatus(isWorking = false) {
+  appState.isWorking = isWorking;
+  
+  const indicator = document.getElementById('statusIndicator');
+  const label = document.getElementById('statusLabel');
+  const activity = document.getElementById('statusActivity');
+  
+  if (!indicator || !label || !activity) return;
+  
+  if (isWorking) {
+    // Green dot = actively working
+    appState.statusIndicator = 'working';
+    indicator.setAttribute('data-status', 'working');
+    label.textContent = 'Working';
+    activity.textContent = appState.currentTask;
+  } else {
+    // Yellow dot = idle but online
+    appState.statusIndicator = 'idle';
+    indicator.setAttribute('data-status', 'idle');
+    label.textContent = 'Online';
+    activity.textContent = appState.currentTask;
+  }
+}
+
+// ====================================================================
+// Set Current Task (Updates status activity text)
+// ====================================================================
+
+function setCurrentTask(taskName) {
+  appState.currentTask = taskName;
+  
+  const activity = document.getElementById('statusActivity');
+  if (activity) {
+    activity.textContent = taskName;
+  }
 }
 
 // ====================================================================
