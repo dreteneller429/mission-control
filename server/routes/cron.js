@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const storage = require('../db/storage');
+const cronScheduler = require('../services/cron-scheduler');
 
 // Initialize cron jobs collection with default jobs
 // Specs: Morning Briefing (7:00am), Task Summary (12:00pm), Email Check (every hour),
@@ -112,20 +113,33 @@ router.post('/', (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: name, description, schedule' });
     }
     
+    // Validate cron expression
+    const cron = require('node-cron');
+    if (!cron.validate(schedule)) {
+      return res.status(400).json({ error: 'Invalid cron expression' });
+    }
+    
+    // Calculate accurate next run time
+    const nextRun = cronScheduler.calculateNextRun(schedule);
+    
     const job = {
       id: `cron-${Date.now()}`,
       name,
       description,
       schedule,
-      schedule_readable: generateReadableSchedule(schedule),
+      schedule_readable: cronScheduler.getScheduleDescription(schedule),
       status: 'active',
       last_run: null,
-      next_run: new Date(Date.now() + 3600000).toISOString(), // Next hour
-      last_result: 'pending',
+      next_run: nextRun,
+      last_result: null,
       created_at: new Date().toISOString()
     };
 
     storage.add('cron', job);
+    
+    // Schedule the job immediately
+    cronScheduler.scheduleJob(job);
+    
     res.status(201).json({
       success: true,
       job,
@@ -139,10 +153,25 @@ router.post('/', (req, res) => {
 router.patch('/:id', (req, res) => {
   try {
     const updates = req.body;
+    
+    // If schedule is being updated, validate and recalculate next run
+    if (updates.schedule) {
+      const cron = require('node-cron');
+      if (!cron.validate(updates.schedule)) {
+        return res.status(400).json({ error: 'Invalid cron expression' });
+      }
+      updates.next_run = cronScheduler.calculateNextRun(updates.schedule);
+      updates.schedule_readable = cronScheduler.getScheduleDescription(updates.schedule);
+    }
+    
     const updated = storage.update('cron', req.params.id, updates);
     if (!updated) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
+    
+    // Reschedule the job
+    cronScheduler.scheduleJob(updated);
+    
     res.json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -167,6 +196,13 @@ router.put('/:id', (req, res) => {
       return res.status(404).json({ error: 'Cron job not found' });
     }
     
+    // Reschedule or unschedule based on status
+    if (updated.status === 'active') {
+      cronScheduler.scheduleJob(updated);
+    } else {
+      cronScheduler.unscheduleJob(updated.id);
+    }
+    
     res.json({
       success: true,
       job: updated,
@@ -183,6 +219,10 @@ router.post('/:id/disable', (req, res) => {
     if (!updated) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
+    
+    // Unschedule the job
+    cronScheduler.unscheduleJob(req.params.id);
+    
     res.json({ success: true, job: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -196,6 +236,10 @@ router.post('/:id/enable', (req, res) => {
     if (!updated) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
+    
+    // Schedule the job
+    cronScheduler.scheduleJob(updated);
+    
     res.json({ success: true, job: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -209,6 +253,10 @@ router.delete('/:id', (req, res) => {
     if (!job) {
       return res.status(404).json({ error: 'Cron job not found' });
     }
+    
+    // Unschedule the job
+    cronScheduler.unscheduleJob(req.params.id);
+    
     res.json({ 
       success: true,
       message: 'Cron job deleted successfully',
@@ -219,51 +267,14 @@ router.delete('/:id', (req, res) => {
   }
 });
 
-// Helper function to generate readable cron schedules
-function generateReadableSchedule(cronString) {
-  const parts = cronString.trim().split(/\s+/);
-  if (parts.length !== 5) {
-    return cronString; // Return original if not valid
+// Get scheduler status (for debugging)
+router.get('/scheduler/status', (req, res) => {
+  try {
+    const status = cronScheduler.getStatus();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
-
-  // Hourly patterns
-  if (minute === '0' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
-    return 'Every hour';
-  }
-  
-  // Every N minutes patterns
-  if (minute === '*/5' && hour === '*') {
-    return 'Every 5 minutes';
-  } else if (minute === '*/10' && hour === '*') {
-    return 'Every 10 minutes';
-  } else if (minute === '*/30' && hour === '*') {
-    return 'Every 30 minutes';
-  }
-  
-  // Daily patterns
-  else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
-    const hrs = parseInt(hour);
-    return `Every day at ${formatHour(hrs)}`;
-  }
-  
-  // Weekly patterns (specific day of week)
-  else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '1') {
-    const hrs = parseInt(hour);
-    return `Every Monday at ${formatHour(hrs)}`;
-  } else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '0') {
-    const hrs = parseInt(hour);
-    return `Every Sunday at ${formatHour(hrs)}`;
-  }
-
-  return cronString;
-}
-
-function formatHour(hour) {
-  const meridiem = hour >= 12 ? 'PM' : 'AM';
-  const displayHour = hour % 12 || 12;
-  return `${displayHour}:00 ${meridiem} EST`;
-}
+});
 
 module.exports = router;

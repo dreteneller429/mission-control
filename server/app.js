@@ -20,6 +20,9 @@ const clientsRoutes = require('./routes/clients');
 const weeklyRecapsRoutes = require('./routes/weekly-recaps');
 const dashboardRoutes = require('./routes/dashboard');
 
+// Import cron scheduler
+const cronScheduler = require('./services/cron-scheduler');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -75,6 +78,22 @@ app.listen(PORT, () => {
   console.log(`   - /api/weekly-recaps`);
   console.log(`   - /api/dashboard`);
   console.log(`   - /health`);
+  
+  // Start cron scheduler
+  cronScheduler.start();
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  cronScheduler.stop();
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received: closing HTTP server');
+  cronScheduler.stop();
+  process.exit(0);
 });
 
 module.exports = app;
