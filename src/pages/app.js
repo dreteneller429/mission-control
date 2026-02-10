@@ -41,13 +41,17 @@ function initApp() {
   loadDashboard();
   setupEventListeners();
   startHeartbeat();
-  startActivityFeed();
   setupStatusToggle();
   
   // Initialize status indicator to idle (yellow)
   setTimeout(() => {
     updateDaveStatus(false);
   }, 500);
+  
+  // Load dashboard logic (will handle real data fetching and initialization)
+  setTimeout(() => {
+    loadDashboardLogic();
+  }, 800);
 }
 
 // ====================================================================
@@ -437,42 +441,32 @@ function startHeartbeat() {
 }
 
 // ====================================================================
-// Activity Feed Auto-Update
+// Load Dashboard Logic (Real Data Integration)
+// ====================================================================
+
+function loadDashboardLogic() {
+  const script = document.createElement('script');
+  script.src = './dashboard-logic.js';
+  script.async = true;
+  script.onload = () => {
+    console.log('Dashboard logic loaded successfully');
+    // Make functions available globally
+    window.dashboardState = dashboardState || {};
+  };
+  script.onerror = () => {
+    console.error('Failed to load dashboard logic');
+  };
+  document.body.appendChild(script);
+}
+
+// ====================================================================
+// Activity Feed Auto-Update (Deprecated - Using dashboard-logic)
 // ====================================================================
 
 function startActivityFeed() {
-  // Add new activity every 8-15 seconds
-  setInterval(() => {
-    const feed = document.getElementById('activityFeed');
-    if (!feed) return;
-
-    // Pick random activity
-    const activity = activityPool[activityCounter % activityPool.length];
-    activityCounter++;
-
-    // Create entry element
-    const entry = document.createElement('div');
-    entry.className = 'activity-entry';
-    entry.innerHTML = `
-      <div class="entry-timestamp">now</div>
-      <div class="entry-dot" style="background-color: ${activity.color};"></div>
-      <div class="entry-content">
-        <span class="entry-action" style="color: ${activity.color};">${activity.action}</span>
-        <span class="entry-description">${activity.description}</span>
-      </div>
-    `;
-
-    // Insert at top
-    feed.insertBefore(entry, feed.firstChild);
-
-    // Keep only 20 entries
-    while (feed.children.length > 20) {
-      feed.removeChild(feed.lastChild);
-    }
-
-    // Update timestamps
-    updateActivityTimestamps();
-  }, Math.random() * 7000 + 8000);
+  // This function is now handled by dashboard-logic.js
+  // The dashboard-logic will handle real data fetching and polling
+  console.log('Activity feed will be managed by dashboard-logic.js');
 }
 
 // ====================================================================
@@ -515,10 +509,24 @@ function setupStatCardClickHandlers() {
   const statCards = document.querySelectorAll('.stat-card');
 
   statCards.forEach(card => {
-    card.addEventListener('click', () => {
-      const cardType = card.getAttribute('data-card');
-      handleStatCardClick(cardType);
-    });
+    const cardType = card.getAttribute('data-card');
+    
+    // For status card, setup View Details button
+    if (cardType === 'status') {
+      const viewDetailsBtn = card.querySelector('.btn-ghost');
+      if (viewDetailsBtn) {
+        viewDetailsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // The dashboard-logic will handle opening the modal
+          console.log('View Details button clicked - modal will open via dashboard-logic');
+        });
+      }
+    } else {
+      // For other cards, navigate to their pages
+      card.addEventListener('click', () => {
+        handleStatCardClick(cardType);
+      });
+    }
   });
 }
 
@@ -537,8 +545,8 @@ function handleStatCardClick(cardType) {
       updateActiveNavLink('documents');
       break;
     case 'status':
-      // Status card - could show a modal or details
-      console.log('Status details clicked');
+      // Status card - modal is handled by dashboard-logic
+      console.log('Status card clicked - view details');
       break;
     default:
       console.log('Card clicked:', cardType);
@@ -546,18 +554,26 @@ function handleStatCardClick(cardType) {
 }
 
 // ====================================================================
-// Quick Links Click Handlers
+// Quick Links Click Handlers (Will be overridden by dashboard-logic)
 // ====================================================================
 
 function setupQuickLinkHandlers() {
-  const quickButtons = document.querySelectorAll('.quick-buttons .btn-glass-pill');
+  // This will be set up by dashboard-logic.js for real data handling
+  // But we'll keep this as a fallback
+  setTimeout(() => {
+    const quickButtons = document.querySelectorAll('.quick-buttons .btn-glass-pill');
 
-  quickButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const text = btn.textContent.trim();
-      handleQuickLinkClick(text);
+    quickButtons.forEach(btn => {
+      if (!btn.hasListener) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const text = btn.textContent.trim();
+          handleQuickLinkClick(text);
+        });
+        btn.hasListener = true;
+      }
     });
-  });
+  }, 100);
 }
 
 function handleQuickLinkClick(linkName) {
@@ -669,6 +685,12 @@ style.textContent = `
 document.head.appendChild(style);
 
 console.log('Mission Control V4 - Dashboard Initialized');
+
+// Expose key functions to global window object for dashboard-logic
+window.loadPage = loadPage;
+window.updateActiveNavLink = updateActiveNavLink;
+window.handleQuickLinkClick = handleQuickLinkClick;
+window.showNotification = showNotification;
 
 // Initialize the app when the DOM is ready
 if (document.readyState === 'loading') {
