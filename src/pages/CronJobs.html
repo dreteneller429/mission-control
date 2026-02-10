@@ -13,276 +13,19 @@
 
   <!-- Cron Jobs List -->
   <section class="cron-jobs-section">
-    <div class="cron-jobs-list" id="cronJobsList">
-      <!-- Job cards will be populated by JavaScript -->
-      <div class="glass-card cron-job-card" data-job-id="morning-briefing">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Morning Briefing</h3>
-            <p class="job-description">Scan AI news, RE market updates, SureClose pipeline</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every day at 7:00 AM EST</span>
-              <code class="cron-notation">0 7 * * *</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707488400000">in 14h 39m</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">Today at 7:15 AM EST</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
-      </div>
-
-      <div class="glass-card cron-job-card" data-job-id="task-summary">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Task Summary</h3>
-            <p class="job-description">Pull tasks, organize by urgency, send morning digest</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every day at 8:00 AM EST</span>
-              <code class="cron-notation">0 8 * * *</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707492000000">in 15h 39m</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">Today at 8:02 AM EST</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
-      </div>
-
-      <div class="glass-card cron-job-card" data-job-id="email-check">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Email Check</h3>
-            <p class="job-description">Monitor david@sureclose.ai for new emails</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every 10 minutes</span>
-              <code class="cron-notation">*/10 * * * *</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707386220000">in 3m 20s</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">9 minutes ago</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
-      </div>
-
-      <div class="glass-card cron-job-card" data-job-id="dashboard-notes">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Dashboard Notes Check</h3>
-            <p class="job-description">Check if David left notes, process them</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every 5 minutes</span>
-              <code class="cron-notation">*/5 * * * *</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707386100000">in 45s</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">4 minutes ago</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
-      </div>
-
-      <div class="glass-card cron-job-card" data-job-id="weekly-swot">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Weekly SWOT</h3>
-            <p class="job-description">Competitor research, opportunity identification</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every Monday at 9:00 AM EST</span>
-              <code class="cron-notation">0 9 * * 1</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707772800000">in 6d 2h 39m</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">Last Monday at 9:05 AM EST</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
-      </div>
-
-      <div class="glass-card cron-job-card" data-job-id="security-audit">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-name">Weekly Security Audit</h3>
-            <p class="job-description">Port scan, failed logins, permissions check</p>
-          </div>
-          <div class="job-status-toggle">
-            <label class="toggle-switch">
-              <input type="checkbox" class="job-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="status-label active">Active</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="detail-item">
-            <span class="detail-label">Schedule</span>
-            <div class="detail-value">
-              <span class="human-readable">Every Monday at 2:00 PM EST</span>
-              <code class="cron-notation">0 14 * * 1</code>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Next Run</span>
-            <div class="detail-value">
-              <span class="next-run" data-time="1707787200000">in 6d 7h 39m</span>
-            </div>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Last Run</span>
-            <div class="detail-value">
-              <span class="last-run">Last Monday at 2:10 PM EST</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="job-actions">
-          <button class="btn btn-secondary sm edit-job-btn">Edit</button>
-          <button class="btn btn-danger sm delete-job-btn">Delete</button>
-        </div>
+    <div class="cron-jobs-list" id="cronJobsList" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+      <!-- Loading indicator -->
+      <div style="text-align: center;">
+        <div class="spinner" style="
+          width: 40px;
+          height: 40px;
+          border: 3px solid rgba(255, 255, 255, 0.2);
+          border-top-color: rgba(0, 122, 255, 0.8);
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin: 0 auto;
+        "></div>
+        <p style="color: var(--text-secondary); margin-top: 16px;">Loading cron jobs...</p>
       </div>
     </div>
   </section>
@@ -295,31 +38,35 @@
         <button class="close-btn" id="closeJobModalBtn">✕</button>
       </div>
       <div class="modal-body">
-        <form id="jobForm" class="form-group">
+        <form id="jobForm" class="form-group" data-mode="create">
           <div class="form-field">
-            <label class="input-label">Job Name</label>
+            <label class="input-label">Job Name *</label>
             <input type="text" class="input" id="jobName" placeholder="e.g., Daily Report" required>
           </div>
 
           <div class="form-field">
-            <label class="input-label">Description</label>
+            <label class="input-label">Description *</label>
             <textarea class="input" id="jobDesc" placeholder="What does this job do?" required></textarea>
           </div>
 
           <div class="form-field">
-            <label class="input-label">Schedule (Cron Notation)</label>
+            <label class="input-label">Schedule (Cron Expression) *</label>
             <input type="text" class="input" id="jobCron" placeholder="0 7 * * * (or use presets below)" required>
             <div class="cron-presets">
               <button type="button" class="btn btn-ghost sm preset" data-cron="*/5 * * * *">Every 5 min</button>
               <button type="button" class="btn btn-ghost sm preset" data-cron="*/10 * * * *">Every 10 min</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 * * * *">Hourly</button>
               <button type="button" class="btn btn-ghost sm preset" data-cron="0 7 * * *">7 AM Daily</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 12 * * *">12 PM Daily</button>
               <button type="button" class="btn btn-ghost sm preset" data-cron="0 9 * * 1">9 AM Monday</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 0 * * 0">Sunday Midnight</button>
+              <button type="button" class="btn btn-ghost sm preset" data-cron="0 0 * * *">Daily Midnight</button>
             </div>
           </div>
 
           <div class="form-actions">
             <button type="button" class="btn btn-secondary" id="cancelJobBtn">Cancel</button>
-            <button type="submit" class="btn btn-primary">Create Job</button>
+            <button type="submit" class="btn btn-primary">Save Job</button>
           </div>
         </form>
       </div>
@@ -328,6 +75,10 @@
 </main>
 
 <style>
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .cron-jobs-container {
   max-width: 100%;
   width: 100%;
@@ -474,7 +225,7 @@
   color: #30D158;
 }
 
-.status-label.paused {
+.status-label.disabled {
   background-color: rgba(255, 159, 10, 0.2);
   color: #FF9F0A;
 }
@@ -527,6 +278,7 @@
 
 .next-run {
   font-weight: 600;
+  color: #30D158;
 }
 
 .job-actions {
@@ -537,6 +289,7 @@
 
 .job-actions .btn {
   min-width: 80px;
+  font-size: 13px;
 }
 
 /* Modal Styles */
@@ -561,7 +314,7 @@
   backdrop-filter: blur(40px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 100%;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -650,11 +403,12 @@ textarea.input {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .preset {
   font-size: 12px;
+  padding: 8px 12px;
 }
 
 .form-actions {
@@ -695,6 +449,7 @@ textarea.input {
 
   .glass-modal {
     max-width: 90%;
+    margin: 20px;
   }
 }
 </style>

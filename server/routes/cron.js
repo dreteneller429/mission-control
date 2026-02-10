@@ -3,6 +3,8 @@ const router = express.Router();
 const storage = require('../db/storage');
 
 // Initialize cron jobs collection with default jobs
+// Specs: Morning Briefing (7:00am), Task Summary (12:00pm), Email Check (every hour),
+// Dashboard Notes Check (6:00pm), Weekly SWOT (Sunday 6pm), Security Audit (Monday 12am)
 storage.initCollection('cron', [
   {
     id: 'morning-briefing',
@@ -11,20 +13,20 @@ storage.initCollection('cron', [
     schedule: '0 7 * * *',
     schedule_readable: 'Every day at 7:00 AM EST',
     status: 'active',
-    last_run: '2026-02-08T07:15:00Z',
-    next_run: '2026-02-09T07:00:00Z',
+    last_run: '2026-02-10T07:15:00Z',
+    next_run: '2026-02-11T07:00:00Z',
     last_result: 'success',
     created_at: '2026-01-15T10:00:00Z'
   },
   {
     id: 'task-summary',
     name: 'Task Summary',
-    description: 'Pull tasks, organize by urgency, send morning digest',
-    schedule: '0 8 * * *',
-    schedule_readable: 'Every day at 8:00 AM EST',
+    description: 'Pull tasks, organize by urgency, send daily summary',
+    schedule: '0 12 * * *',
+    schedule_readable: 'Every day at 12:00 PM EST',
     status: 'active',
-    last_run: '2026-02-08T08:02:00Z',
-    next_run: '2026-02-09T08:00:00Z',
+    last_run: '2026-02-10T12:02:00Z',
+    next_run: '2026-02-11T12:00:00Z',
     last_result: 'success',
     created_at: '2026-01-20T10:00:00Z'
   },
@@ -32,11 +34,11 @@ storage.initCollection('cron', [
     id: 'email-check',
     name: 'Email Check',
     description: 'Monitor david@sureclose.ai for new emails',
-    schedule: '*/10 * * * *',
-    schedule_readable: 'Every 10 minutes',
+    schedule: '0 * * * *',
+    schedule_readable: 'Every hour',
     status: 'active',
-    last_run: '2026-02-08T18:10:00Z',
-    next_run: '2026-02-08T18:20:00Z',
+    last_run: '2026-02-10T13:00:00Z',
+    next_run: '2026-02-10T14:00:00Z',
     last_result: 'success',
     created_at: '2026-01-10T10:00:00Z'
   },
@@ -44,11 +46,11 @@ storage.initCollection('cron', [
     id: 'dashboard-notes',
     name: 'Dashboard Notes Check',
     description: 'Check if David left notes, process them',
-    schedule: '*/5 * * * *',
-    schedule_readable: 'Every 5 minutes',
+    schedule: '0 18 * * *',
+    schedule_readable: 'Every day at 6:00 PM EST',
     status: 'active',
-    last_run: '2026-02-08T18:15:00Z',
-    next_run: '2026-02-08T18:20:00Z',
+    last_run: '2026-02-10T18:00:00Z',
+    next_run: '2026-02-11T18:00:00Z',
     last_result: 'success',
     created_at: '2026-01-25T10:00:00Z'
   },
@@ -56,23 +58,23 @@ storage.initCollection('cron', [
     id: 'weekly-swot',
     name: 'Weekly SWOT',
     description: 'Competitor research, opportunity identification',
-    schedule: '0 9 * * 1',
-    schedule_readable: 'Every Monday at 9:00 AM EST',
+    schedule: '0 18 * * 0',
+    schedule_readable: 'Every Sunday at 6:00 PM EST',
     status: 'active',
-    last_run: '2026-02-01T09:05:00Z',
-    next_run: '2026-02-15T09:00:00Z',
+    last_run: '2026-02-09T18:05:00Z',
+    next_run: '2026-02-16T18:00:00Z',
     last_result: 'success',
     created_at: '2026-01-15T10:00:00Z'
   },
   {
     id: 'security-audit',
-    name: 'Weekly Security Audit',
+    name: 'Security Audit',
     description: 'Port scan, failed logins, permissions check',
-    schedule: '0 14 * * 1',
-    schedule_readable: 'Every Monday at 2:00 PM EST',
+    schedule: '0 0 * * 1',
+    schedule_readable: 'Every Monday at 12:00 AM EST',
     status: 'active',
-    last_run: '2026-02-01T14:10:00Z',
-    next_run: '2026-02-15T14:00:00Z',
+    last_run: '2026-02-10T00:10:00Z',
+    next_run: '2026-02-17T00:00:00Z',
     last_result: 'success',
     created_at: '2026-01-20T10:00:00Z'
   }
@@ -226,19 +228,31 @@ function generateReadableSchedule(cronString) {
 
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
 
+  // Hourly patterns
+  if (minute === '0' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+    return 'Every hour';
+  }
+  
+  // Every N minutes patterns
   if (minute === '*/5' && hour === '*') {
     return 'Every 5 minutes';
   } else if (minute === '*/10' && hour === '*') {
     return 'Every 10 minutes';
   } else if (minute === '*/30' && hour === '*') {
     return 'Every 30 minutes';
-  } else if (minute === '0' && dayOfMonth === '*' && month === '*') {
+  }
+  
+  // Daily patterns
+  else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
     const hrs = parseInt(hour);
     return `Every day at ${formatHour(hrs)}`;
-  } else if (minute === '0' && dayOfWeek === '1') {
+  }
+  
+  // Weekly patterns (specific day of week)
+  else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '1') {
     const hrs = parseInt(hour);
     return `Every Monday at ${formatHour(hrs)}`;
-  } else if (minute === '0' && dayOfWeek === '0') {
+  } else if (minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '0') {
     const hrs = parseInt(hour);
     return `Every Sunday at ${formatHour(hrs)}`;
   }
