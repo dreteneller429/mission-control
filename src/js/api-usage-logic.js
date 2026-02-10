@@ -249,17 +249,46 @@ class APIUsageManager {
     const tbody = document.getElementById('apiCallsTable');
     if (!tbody) return;
     
+    if (this.data.recentCalls.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No recent API calls</td></tr>';
+      return;
+    }
+    
     tbody.innerHTML = this.data.recentCalls
       .map(call => `
         <tr>
           <td>${new Date(call.timestamp).toLocaleString()}</td>
-          <td>${call.model}</td>
+          <td>${this.formatModelName(call.model)}</td>
           <td>${call.tokens.toLocaleString()}</td>
           <td>$${call.cost.toFixed(4)}</td>
           <td><span class="status-badge success">✓ Success</span></td>
         </tr>
       `)
       .join('');
+  }
+
+  /**
+   * Format model name for display
+   */
+  formatModelName(model) {
+    const modelLower = model.toLowerCase();
+    
+    if (modelLower.includes('haiku')) {
+      return 'Claude Haiku 3.5';
+    } else if (modelLower.includes('sonnet')) {
+      if (modelLower.includes('3.5') || modelLower.includes('3-5')) {
+        return 'Claude Sonnet 3.5';
+      } else if (modelLower.includes('4') || modelLower.includes('4-5')) {
+        return 'Claude Sonnet 4.5';
+      }
+      return 'Claude Sonnet';
+    } else if (modelLower.includes('opus')) {
+      return 'Claude Opus 3';
+    } else if (modelLower.includes('brave')) {
+      return 'Brave Search API';
+    }
+    
+    return model; // Fallback to original
   }
 
   /**
