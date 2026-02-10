@@ -45,8 +45,13 @@ function initApp() {
   
   // Initialize status indicator to idle (yellow)
   setTimeout(() => {
-    updateDaveStatus(false);
+    updateDaveStatus(false, false, 'Initializing...');
   }, 500);
+  
+  // Start real-time status polling (N3 FIX)
+  setTimeout(() => {
+    startStatusPolling();
+  }, 1000);
   
   // Load dashboard logic (will handle real data fetching and initialization)
   setTimeout(() => {
@@ -99,10 +104,16 @@ function loadDashboard() {
 
 // ====================================================================
 // Update DAVE Status Indicator (Green = Working, Yellow = Idle)
+// N3 FIX: Dynamic status based on real activity
 // ====================================================================
 
-function updateDaveStatus(isWorking = false) {
-  appState.isWorking = isWorking;
+function updateDaveStatus(isWorking = false, subAgentsRunning = false, currentTask = null) {
+  appState.isWorking = isWorking || subAgentsRunning;
+  appState.subAgentsRunning = subAgentsRunning;
+  
+  if (currentTask) {
+    appState.currentTask = currentTask;
+  }
   
   const indicator = document.getElementById('statusIndicator');
   const label = document.getElementById('statusLabel');
@@ -110,19 +121,37 @@ function updateDaveStatus(isWorking = false) {
   
   if (!indicator || !label || !activity) return;
   
-  if (isWorking) {
-    // Green dot = actively working
+  if (isWorking || subAgentsRunning) {
+    // Green dot = actively working OR sub-agents running
     appState.statusIndicator = 'working';
     indicator.setAttribute('data-status', 'working');
-    label.textContent = 'Working';
+    label.textContent = subAgentsRunning ? 'Working' : 'Active';
     activity.textContent = appState.currentTask;
   } else {
     // Yellow dot = idle but online
     appState.statusIndicator = 'idle';
     indicator.setAttribute('data-status', 'idle');
     label.textContent = 'Online';
-    activity.textContent = appState.currentTask;
+    activity.textContent = 'Waiting for tasks';
   }
+}
+
+// Poll for real-time status updates
+function startStatusPolling() {
+  // Check status every 5 seconds
+  setInterval(async () => {
+    try {
+      const response = await fetch('/api/dashboard/stats');
+      if (response.ok) {
+        const data = await response.json();
+        const isWorking = data.active_tasks > 0;
+        const currentTask = data.current_task || 'No active tasks';
+        updateDaveStatus(isWorking, false, currentTask);
+      }
+    } catch (error) {
+      console.error('Error polling status:', error);
+    }
+  }, 5000);
 }
 
 // ====================================================================

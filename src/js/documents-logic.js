@@ -34,20 +34,23 @@ class DocumentsManager {
 
   async loadDocuments() {
     const list = document.getElementById('documentsList');
-    list.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading documents...</p></div>';
-
+    // G7 FIX: No loading spinner, go directly to fetching or show empty state
+    
     try {
       const response = await fetch('/api/documents');
       if (response.ok) {
         this.documents = await response.json();
         this.filteredDocuments = this.documents;
         this.applyFilters();
+      } else if (response.status === 404) {
+        // No documents found - show empty state
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><p>No documents yet</p><p class="empty-hint">Documents will appear here</p></div>';
       } else {
         throw new Error('Failed to load documents');
       }
     } catch (error) {
       console.error('Error loading documents:', error);
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading documents</p></div>';
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Unable to load documents</p><p class="empty-hint">Please check your connection</p></div>';
     }
   }
 
