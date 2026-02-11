@@ -410,11 +410,7 @@ textarea.input {
   background: transparent;
 }
 
-.nav-item:hover {
-  color: var(--text-primary);
-  background: var(--bg-glass-hover);
-  transform: translateX(2px);
-}
+/* Removed - hover handled by .nav-link only to prevent double effect */
 
 .nav-item.active {
   color: var(--text-primary);

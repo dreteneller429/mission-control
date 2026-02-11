@@ -231,6 +231,16 @@ function setupSidebarToggle() {
         sidebar.classList.toggle('collapsed');
         appState.sidebarCollapsed = sidebar.classList.contains('collapsed');
         
+        // Update arrow direction (FIX 2C)
+        const arrow = toggle.querySelector('.toggle-arrow');
+        if (arrow) {
+          if (sidebar.classList.contains('collapsed')) {
+            arrow.innerHTML = '›'; // Right arrow when collapsed
+          } else {
+            arrow.innerHTML = '‹'; // Left arrow when expanded
+          }
+        }
+        
         // Save state to localStorage
         localStorage.setItem('sidebarCollapsed', appState.sidebarCollapsed);
         
