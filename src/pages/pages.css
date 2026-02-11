@@ -454,15 +454,14 @@
 .weekly-recaps-container,
 .workshop-page {
   margin-left: 280px;
-  width: calc(100% - 280px);
-  padding: 24px 32px;
+  margin-right: 0;
+  padding: 24px 32px 24px 16px;
   overflow-y: auto;
   overflow-x: hidden;
   animation: fadeIn 0.5s ease;
   min-height: 100vh;
   box-sizing: border-box;
   margin-top: 0;
-  margin-right: 0;
   margin-bottom: 0;
   transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
@@ -482,7 +481,6 @@
 .weekly-recaps-container.sidebar-collapsed,
 .workshop-page.sidebar-collapsed {
   margin-left: 88px;
-  width: calc(100% - 88px);
 }
 
 /* FIX 1D: Ensure all page content stretches full width */
