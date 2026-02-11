@@ -7,26 +7,31 @@ const router = express.Router();
 // GET /api/dashboard/stats - Stat cards data
 router.get('/stats', (req, res) => {
   try {
-    const tasks = storage.findAll('tasks');
-    const intelligence = storage.findAll('intelligence');
-    const clients = storage.findAll('clients');
-    const messages = storage.findAll('messages');
+    // FIX 3B: Pull from actual workshop_tasks store
+    const tasks = storage.getAll('workshop_tasks') || [];
+    const agents = storage.getAll('agents') || [];
+    const documents = storage.getAll('documents') || [];
 
+    // Count by actual status
+    const queuedTasks = tasks.filter(t => t.status === 'queued').length;
     const activeTasks = tasks.filter(t => t.status === 'active').length;
     const completedTasks = tasks.filter(t => t.status === 'completed').length;
-    const deployedIntelligence = intelligence.filter(i => i.deployed).length;
-    const activeClients = clients.filter(c => c.status === 'active').length;
 
     const stats = {
+      // Workshop stats
       total_tasks: tasks.length,
+      queued_tasks: queuedTasks,
       active_tasks: activeTasks,
       completed_tasks: completedTasks,
-      task_completion_rate: tasks.length > 0 ? ((completedTasks / tasks.length) * 100).toFixed(1) : 0,
-      intelligence_reports: intelligence.length,
-      intelligence_deployed: deployedIntelligence,
-      total_clients: clients.length,
-      active_clients: activeClients,
-      total_messages: messages.length,
+      
+      // Agents stats
+      total_agents: agents.length,
+      active_agents: agents.filter(a => a.status === 'active').length,
+      
+      // Documents stats
+      total_documents: documents.length,
+      recent_documents: documents.slice(-5).length,
+      
       timestamp: new Date().toISOString()
     };
 
@@ -94,39 +99,31 @@ router.get('/activity', (req, res) => {
 // GET /api/commits - Recent git commits
 router.get('/commits', (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 20;
     
-    // Try to get git log
+    // FIX 3D: Pull from actual git log with correct format
     try {
-      const cwd = process.cwd();
+      const repoPath = '/home/clawd/.openclaw/workspace/mission-control';
       const gitLog = execSync(
-        `git log --oneline -${limit} --pretty=format:"%H|%an|%ae|%ai|%s"`,
-        { cwd, encoding: 'utf8' }
+        'git log --oneline --format="%H|%s|%cr|%an" -' + limit,
+        { cwd: repoPath, encoding: 'utf-8' }
       );
 
       const commits = gitLog.trim().split('\n').map(line => {
-        const [hash, author, email, date, message] = line.split('|');
+        const [hash, message, date, author] = line.split('|');
         return {
           hash: hash.substring(0, 7),
-          author,
-          email,
-          timestamp: date,
-          message
+          message,
+          date,
+          author
         };
       });
 
-      res.json({
-        count: commits.length,
-        commits
-      });
+      res.json(commits);
     } catch (error) {
       // Git not available or not a git repo
       console.warn('Git log not available:', error.message);
-      res.json({
-        count: 0,
-        commits: [],
-        note: 'Git repository not available'
-      });
+      res.json([]);
     }
   } catch (error) {
     console.error('Error fetching commits:', error);

@@ -128,7 +128,13 @@ async function loadActivityFeed() {
 
 function updateActivityFeed(activities) {
   const feed = document.getElementById('activityFeed');
-  if (!feed || activities.length === 0) return;
+  if (!feed) return;
+  
+  // FIX 3C: Show empty state when no activities
+  if (activities.length === 0) {
+    feed.innerHTML = '<div class="empty-state">No recent activity</div>';
+    return;
+  }
   
   // Clear existing entries
   feed.innerHTML = '';
@@ -210,7 +216,8 @@ async function loadRecentCommits() {
     if (!response.ok) throw new Error('Failed to fetch commits');
     
     const data = await response.json();
-    dashboardState.commits = data.commits || [];
+    // FIX 3D: API now returns array directly
+    dashboardState.commits = Array.isArray(data) ? data : (data.commits || []);
     
     updateCommitsLog(dashboardState.commits);
   } catch (error) {
@@ -233,16 +240,24 @@ function updateCommitsLog(commits) {
   
   commits.slice(0, 10).forEach((commit, index) => {
     const emoji = getCommitEmoji(commit.message);
-    const relativeTime = formatRelativeTime(commit.timestamp);
+    const relativeTime = formatRelativeTime(commit.date || commit.timestamp);
     
     const entry = document.createElement('div');
     entry.className = 'commit-entry';
+    entry.style.cursor = 'pointer';
     entry.innerHTML = `
       <div class="commit-emoji">${emoji}</div>
       <div class="commit-message">${escapeHtml(commit.message)}</div>
       <div class="commit-author">${escapeHtml(commit.author)}</div>
       <div class="commit-time">${relativeTime}</div>
     `;
+    
+    // FIX 3F: Make commits clickable - navigate to documents
+    entry.addEventListener('click', () => {
+      if (typeof loadPage === 'function') {
+        loadPage('documents');
+      }
+    });
     
     log.appendChild(entry);
   });

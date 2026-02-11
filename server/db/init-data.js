@@ -113,24 +113,8 @@ const generateInitialData = () => {
       }
     ],
 
-    messages: [
-      {
-        id: uuidv4(),
-        timestamp: now,
-        sender_id: 'agent-main',
-        sender_name: 'Main Agent',
-        message_text: 'Starting daily sync process',
-        avatar: '🤖'
-      },
-      {
-        id: uuidv4(),
-        timestamp: oneHourAgo,
-        sender_id: 'agent-workshop',
-        sender_name: 'Workshop Agent',
-        message_text: 'Task processing completed',
-        avatar: '🔧'
-      }
-    ],
+    // FIX 3C: No fake messages - only real activity from actual operations
+    messages: [],
 
     documents: [
       {
