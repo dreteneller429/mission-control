@@ -454,7 +454,8 @@
 .weekly-recaps-container,
 .workshop-page {
   margin-left: 280px;
-  padding: 32px;
+  width: calc(100% - 280px);
+  padding: 24px 32px;
   overflow-y: auto;
   overflow-x: hidden;
   animation: fadeIn 0.5s ease;
@@ -481,6 +482,22 @@
 .weekly-recaps-container.sidebar-collapsed,
 .workshop-page.sidebar-collapsed {
   margin-left: 88px;
+  width: calc(100% - 88px);
+}
+
+/* FIX 1D: Ensure all page content stretches full width */
+.dashboard-container > *,
+.documents-container > *,
+.journal-container > *,
+.intelligence-container > *,
+.agents-container > *,
+.clients-container > *,
+.cron-jobs-container > *,
+.api-usage-container > *,
+.weekly-recaps-container > *,
+.workshop-page > * {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dashboard-section {
@@ -1089,7 +1106,7 @@
   .workshop-page {
     width: 100%;
     margin-left: 0;
-    padding: 80px 16px 32px 16px;
+    padding: 80px 16px 16px;
     max-width: 100%;
     overflow-x: hidden;
   }
