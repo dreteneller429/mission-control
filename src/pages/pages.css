@@ -722,7 +722,7 @@
 
 .activity-section {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr minmax(200px, 280px);
   gap: 24px;
   max-width: 100%;
   overflow-x: hidden;
