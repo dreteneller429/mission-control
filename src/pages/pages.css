@@ -453,17 +453,15 @@
 .docudigest-container,
 .weekly-recaps-container,
 .workshop-page {
-  position: absolute;
-  left: 280px;
-  right: 0;
-  top: 0;
+  margin-left: 280px;
+  width: calc(100% - 280px);
   padding: 24px 32px 24px 16px;
   overflow-y: auto;
   overflow-x: hidden;
   animation: fadeIn 0.5s ease;
   min-height: 100vh;
   box-sizing: border-box;
-  transition: left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
 }
@@ -480,7 +478,10 @@
 .docudigest-container.sidebar-collapsed,
 .weekly-recaps-container.sidebar-collapsed,
 .workshop-page.sidebar-collapsed {
-  left: 88px;
+  margin-left: 88px;
+  width: calc(100% - 88px);
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* FIX 1D: Ensure all page content stretches full width */
@@ -1102,9 +1103,10 @@
   .docudigest-container,
   .weekly-recaps-container,
   .workshop-page {
-    left: 0;
-    right: 0;
+    margin-left: 0;
+    width: 100%;
     padding: 80px 16px 16px;
+    box-sizing: border-box;
     overflow-x: hidden;
   }
 
