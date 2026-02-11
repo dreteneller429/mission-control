@@ -7,11 +7,11 @@
    ==================================================================== */
 
 .app-container {
-  display: flex;
+  display: block;
   width: 100%;
   min-height: 100vh;
   position: relative;
-  flex-direction: row;
+  overflow-x: hidden;
 }
 
 /* ====================================================================
