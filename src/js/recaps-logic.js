@@ -19,15 +19,22 @@ class WeeklyRecapsManager {
   }
 
   updateButtonStates() {
-    const nextWeekBtn = document.getElementById('nextWeekBtn');
-    if (nextWeekBtn) {
-      const nextWeekStart = new Date(this.currentWeekStart);
-      nextWeekStart.setDate(nextWeekStart.getDate() + 7);
-      const today = new Date();
+    const nextBtn = document.getElementById('nextWeekBtn');
+    if (nextBtn) {
+      const thisWeekStart = this.getWeekStart(new Date());
       
-      // Disable next button if we're already at the current week or beyond
-      nextWeekBtn.disabled = nextWeekStart > today;
-      nextWeekBtn.style.opacity = nextWeekBtn.disabled ? '0.5' : '1';
+      // Disable next button if we're at the current week
+      if (this.currentWeekStart.getTime() >= thisWeekStart.getTime()) {
+        nextBtn.classList.add('disabled');
+        nextBtn.style.opacity = '0.3';
+        nextBtn.style.pointerEvents = 'none';
+        nextBtn.disabled = true;
+      } else {
+        nextBtn.classList.remove('disabled');
+        nextBtn.style.opacity = '1';
+        nextBtn.style.pointerEvents = 'auto';
+        nextBtn.disabled = false;
+      }
     }
   }
 
@@ -41,19 +48,23 @@ class WeeklyRecapsManager {
   previousWeek() {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
     this.updateDisplay();
+    this.updateButtonStates();
   }
 
   nextWeek() {
-    const nextWeekStart = new Date(this.currentWeekStart);
-    nextWeekStart.setDate(nextWeekStart.getDate() + 7);
-    const today = new Date();
+    const thisWeekStart = this.getWeekStart(new Date());
+    this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
     
-    // Don't go beyond the current week
-    if (nextWeekStart <= today) {
-      this.currentWeekStart = nextWeekStart;
+    // Can't go past current week
+    if (this.currentWeekStart.getTime() > thisWeekStart.getTime()) {
+      this.currentWeekStart = thisWeekStart;
       this.updateDisplay();
       this.updateButtonStates();
+      return;
     }
+    
+    this.updateDisplay();
+    this.updateButtonStates();
   }
 
   formatWeekDisplay(date) {
