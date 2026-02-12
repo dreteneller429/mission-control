@@ -72,12 +72,16 @@ const remove = (collection, id) => {
   return null;
 };
 
+// Alias for compatibility
+const getAll = findAll;
+
 module.exports = {
   initCollection,
   readCollection,
   writeCollection,
   findById,
   findAll,
+  getAll,  // Alias for findAll
   findIndex,
   update,
   add,
