@@ -46,10 +46,89 @@ class ClientsManager {
   }
   
   openAddClientModal() {
-    // FIX 9A: Placeholder for add client modal
-    // TODO: Implement glass modal with fields: name, company, status dropdown (Active/Prospect/Closed), MRR, notes
-    // POST to /api/clients with client data
-    alert('Add Client form - to be implemented. Fields: name, company, status, MRR, notes. Backend POST to /api/clients');
+    const modal = document.getElementById('clientModal');
+    const details = document.getElementById('clientDetails');
+    
+    details.innerHTML = `
+      <div class="modal-header">
+        <h2 class="modal-title">Add New Client</h2>
+      </div>
+      <form id="addClientForm" class="client-form">
+        <div class="form-group">
+          <label for="clientName">Client Name *</label>
+          <input type="text" id="clientName" name="name" required class="form-input" />
+        </div>
+        
+        <div class="form-group">
+          <label for="clientCompany">Company *</label>
+          <input type="text" id="clientCompany" name="company" required class="form-input" />
+        </div>
+        
+        <div class="form-group">
+          <label for="clientStatus">Status *</label>
+          <select id="clientStatus" name="status" required class="form-input">
+            <option value="active">Active</option>
+            <option value="prospect">Prospect</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="clientMRR">MRR (Monthly Recurring Revenue)</label>
+          <input type="number" id="clientMRR" name="mrr" min="0" step="100" class="form-input" placeholder="0" />
+        </div>
+        
+        <div class="form-group">
+          <label for="clientNotes">Notes</label>
+          <textarea id="clientNotes" name="notes" rows="4" class="form-input"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn-glass-pill" onclick="document.getElementById('clientModal').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn-glass-pill btn-accent">Save Client</button>
+        </div>
+      </form>
+    `;
+    
+    modal.classList.add('open');
+    
+    // Handle form submission
+    document.getElementById('addClientForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.saveNewClient(new FormData(e.target));
+    });
+  }
+  
+  async saveNewClient(formData) {
+    const clientData = {
+      name: formData.get('name'),
+      company: formData.get('company'),
+      status: formData.get('status'),
+      mrr: parseInt(formData.get('mrr')) || 0,
+      notes: formData.get('notes') || '',
+      lastActivity: new Date().toISOString(),
+      nextAction: 'Follow up'
+    };
+    
+    try {
+      const response = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientData)
+      });
+      
+      if (response.ok) {
+        const newClient = await response.json();
+        this.clients.push(newClient);
+        this.applyFilters();
+        document.getElementById('clientModal').classList.remove('open');
+      } else {
+        alert('Failed to save client. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving client:', error);
+      alert('Error saving client. Please try again.');
+    }
   }
 
   async loadClients() {

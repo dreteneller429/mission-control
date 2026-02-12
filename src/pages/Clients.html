@@ -396,6 +396,70 @@
   opacity: 0.5;
 }
 
+.modal-header {
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.client-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.form-input {
+  padding: 0.75rem 1rem;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  background: var(--bg-glass-hover);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue-light);
+}
+
+.form-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .clients-container {
     padding: 1rem;
@@ -411,6 +475,10 @@
   
   .modal-content {
     padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
   }
 }
 </style>
