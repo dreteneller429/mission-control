@@ -96,20 +96,17 @@ const generateInitialData = () => {
 
     agents: [
       {
-        id: uuidv4(),
-        name: 'Main Agent',
-        role: 'orchestrator',
+        id: 'dave-001',
+        name: 'DAVE',
+        role: 'COO to David Himself',
+        title: 'Digital Autonomous Virtual Executive',
         status: 'active',
-        current_task: 'Managing workflow',
-        avatar: '🤖'
-      },
-      {
-        id: uuidv4(),
-        name: 'Workshop Agent',
-        role: 'task-manager',
-        status: 'active',
-        current_task: 'Processing tasks',
-        avatar: '🔧'
+        specialty: 'System Orchestration, Task Management, Accountability',
+        description: 'Primary AI executive assistant. Manages sub-agents, coordinates projects, monitors systems, and keeps David accountable.',
+        capabilities: ['Task delegation', 'Code review', 'Research', 'System monitoring', 'Proactive scheduling'],
+        created: '2026-02-01',
+        current_task: 'Mission Control V4 Fix Sprint',
+        avatar: '🥷🏼'
       }
     ],
 
