@@ -18,10 +18,13 @@ class JournalManager {
     const nextBtn = document.getElementById('nextDayBtn');
     const datePicker = document.getElementById('journalDatePicker');
     const dateDisplay = document.getElementById('dateDisplay');
+    const newEntryBtn = document.getElementById('newEntryBtn');
 
     prevBtn?.addEventListener('click', () => this.previousDay());
     nextBtn?.addEventListener('click', () => this.nextDay());
     dateDisplay?.addEventListener('click', () => datePicker?.click());
+    newEntryBtn?.addEventListener('click', () => this.openNewEntryForm());
+    
     datePicker?.addEventListener('change', (e) => {
       if (e.target.value) {
         const newDate = new Date(e.target.value);
@@ -39,6 +42,12 @@ class JournalManager {
       const todayStr = this.formatDateForFilename(today);
       datePicker.max = todayStr;
     }
+  }
+  
+  openNewEntryForm() {
+    // FIX 4C: Placeholder for new entry form
+    // TODO: Implement glass modal with title, body, tags (Peachstone, SureClose, General, Personal)
+    alert('New Entry form - to be implemented. Backend POST to /api/journal with { date, title, body, tags }');
   }
 
   isValidDate(date) {
