@@ -291,10 +291,15 @@ The real estate wholesaling market is experiencing consolidation with 3 major pl
     list.innerHTML = '';
 
     if (this.filteredReports.length === 0) {
+      const emptyMessage = this.reports.length === 0 
+        ? 'No intelligence reports yet. DAVE will generate research reports here.'
+        : 'No reports found';
+      const emptyIcon = this.reports.length === 0 ? '📚' : '🔍';
+      
       list.innerHTML = `
         <div class="empty-list-message" style="padding: 32px 16px; text-align: center; color: rgba(255, 255, 255, 0.5);">
-          <div style="font-size: 24px; margin-bottom: 8px;">🔍</div>
-          <div style="font-size: 14px;">No reports found</div>
+          <div style="font-size: 24px; margin-bottom: 8px;">${emptyIcon}</div>
+          <div style="font-size: 14px;">${emptyMessage}</div>
         </div>
       `;
       return;
