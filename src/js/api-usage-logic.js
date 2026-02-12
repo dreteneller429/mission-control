@@ -298,10 +298,23 @@ class APIUsageManager {
     const canvas = document.getElementById('spendHistoryChart');
     if (!canvas) return;
     
+    // If no history data, hide chart and show message
+    if (!this.data.history || this.data.history.length === 0) {
+      const chartContainer = canvas.closest('.chart-container') || canvas.parentElement;
+      if (chartContainer) {
+        chartContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><p>Spend history will appear once usage tracking is connected.</p></div>';
+      }
+      return;
+    }
+    
     if (window.Chart) {
       this.drawChartJS(canvas);
     } else {
       console.warn('Chart.js not available, using SVG fallback');
+      const chartContainer = canvas.closest('.chart-container') || canvas.parentElement;
+      if (chartContainer) {
+        chartContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><p>Spend history will appear once usage tracking is connected.</p></div>';
+      }
     }
   }
 
