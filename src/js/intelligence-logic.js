@@ -79,12 +79,18 @@ class IntelligenceManager {
         const reports = await response.json();
         // Transform backend reports to UI format
         this.reports = reports.map(report => this.transformBackendReport(report));
+      } else if (response.status === 404) {
+        // No reports yet - this is expected
+        this.reports = [];
       } else {
-        this.reports = this.getMockReports();
+        // Backend error - show empty state
+        console.error('Failed to load intelligence reports:', response.status);
+        this.reports = [];
       }
     } catch (error) {
-      console.log('Using mock reports:', error);
-      this.reports = this.getMockReports();
+      // API not available - show empty state (defer functionality per Section 7)
+      console.log('Intelligence API not ready:', error.message);
+      this.reports = [];
     }
     this.filteredReports = [...this.reports];
   }
