@@ -20,7 +20,7 @@ import {
 
 const state = {
   currentTab: 'personnel',
-  selectedAgentId: 'dave',
+  selectedAgentId: 'dave-main',
   agents: [],
   messages: [],
   isLoading: false,

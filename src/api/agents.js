@@ -1,114 +1,12 @@
 /**
- * agents.js - Mock API for Agents Page
+ * agents.js - API for Agents Page
  * Provides endpoints for agents and communications
  */
 
-// ====================================================================
-// Mock Data
-// ====================================================================
-
-const mockAgents = [
-  {
-    id: 'dave',
-    name: 'DAVE',
-    role: 'Digital Autonomous Virtual Executive',
-    status: 'online',
-    activity: 'commander',
-    avatar: 'D',
-    avatarClass: 'dave',
-    currentTask: {
-      name: 'Phase 2 Development',
-      description: 'Building core features for Mission Control V4',
-      progress: 65,
-      subtasks: [
-        { name: 'Personnel Tab UI', completed: true },
-        { name: 'Comms Hub Implementation', completed: true },
-        { name: 'Backend API Integration', completed: false },
-        { name: 'Testing & QA', completed: false }
-      ]
-    },
-    missionDirectives: [
-      'Maximize David\'s time and output in MAKER mode (9:30am-1pm EST)',
-      'Flag low-leverage distractions and protect focus time',
-      'Manage sub-agent workflow: spawn, validate, deploy',
-      'Keep David accountable to the bigger vision—his family\'s security and freedom',
-      'Automate everything possible; maintain operational bandwidth',
-      'Think ahead: anticipate needs before they\'re voiced'
-    ],
-    operationalBio: 'DAVE operates as a proactive executive: reading the room, staying ahead of problems, and making sure David stays laser-focused on what matters. I don\'t coddle—I push back when you\'re slipping, reference the WHY (family, debt, freedom), and create space for deep work. I delegate to sub-agents, validate their output, and keep the machine running clean. Casual, direct, mission-driven.'
-  },
-  {
-    id: 'phase-2-agent',
-    name: 'Phase-2-Agent',
-    role: 'Frontend Developer',
-    status: 'online',
-    activity: 'working',
-    avatar: 'P2',
-    avatarClass: 'sub-agent-1',
-    currentTask: {
-      name: 'Building Navigation System',
-      description: 'Implementing responsive sidebar with active states',
-      progress: 45,
-      subtasks: [
-        { name: 'Layout Structure', completed: true },
-        { name: 'Styling & Glass Effects', completed: true },
-        { name: 'Responsive Behavior', completed: false },
-        { name: 'Animation Polish', completed: false }
-      ]
-    }
-  }
-];
-
-const mockMessages = [
-  {
-    id: 1,
-    senderId: 'dave',
-    senderName: 'DAVE',
-    avatar: 'D',
-    avatarClass: 'dave',
-    timestamp: new Date(Date.now() - 15 * 60000),
-    text: 'Phase 2 is tracking. Personnel tab loaded, agent profiles rendering correctly. What\'s next?'
-  },
-  {
-    id: 2,
-    senderId: 'david',
-    senderName: 'David',
-    avatar: 'D',
-    avatarClass: 'david',
-    timestamp: new Date(Date.now() - 12 * 60000),
-    text: 'Looking good. Need the Comms tab functional—messages should show real-time updates from sub-agents.'
-  },
-  {
-    id: 3,
-    senderId: 'phase-2-agent',
-    senderName: 'Phase-2-Agent',
-    avatar: 'P2',
-    avatarClass: 'sub-agent-1',
-    timestamp: new Date(Date.now() - 8 * 60000),
-    text: 'Navigation styling complete. Integrated glass morphism and responsive breakpoints. Ready for next phase.'
-  },
-  {
-    id: 4,
-    senderId: 'dave',
-    senderName: 'DAVE',
-    avatar: 'D',
-    avatarClass: 'dave',
-    timestamp: new Date(Date.now() - 5 * 60000),
-    text: 'Excellent. Phase-2-Agent, move to backend integration. David, the Hub is ready for live messages.'
-  },
-  {
-    id: 5,
-    senderId: 'david',
-    senderName: 'David',
-    avatar: 'D',
-    avatarClass: 'david',
-    timestamp: new Date(Date.now() - 2 * 60000),
-    text: 'Perfect. Let\'s ship it. Document the API endpoints and we\'re golden.'
-  }
-];
+const API_BASE = 'http://localhost:3000';
 
 // ====================================================================
-// API Endpoints (Mock)
+// API Endpoints
 // ====================================================================
 
 /**
@@ -116,15 +14,23 @@ const mockMessages = [
  * Returns all agents with their profiles
  */
 export async function getAgents() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 'success',
-        data: mockAgents,
-        timestamp: new Date().toISOString()
-      });
-    }, 300);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/agents`);
+    if (!response.ok) throw new Error('Failed to fetch agents');
+    const data = await response.json();
+    return {
+      status: 'success',
+      data: data,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('getAgents error:', error);
+    return {
+      status: 'success',
+      data: [],
+      timestamp: new Date().toISOString()
+    };
+  }
 }
 
 /**
@@ -132,24 +38,22 @@ export async function getAgents() {
  * Returns a single agent profile
  */
 export async function getAgent(agentId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const agent = mockAgents.find(a => a.id === agentId);
-      if (agent) {
-        resolve({
-          status: 'success',
-          data: agent,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        reject({
-          status: 'error',
-          message: 'Agent not found',
-          code: 404
-        });
-      }
-    }, 200);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/agents/${agentId}`);
+    if (!response.ok) throw new Error('Agent not found');
+    const data = await response.json();
+    return {
+      status: 'success',
+      data: data,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    throw {
+      status: 'error',
+      message: 'Agent not found',
+      code: 404
+    };
+  }
 }
 
 /**
@@ -157,27 +61,26 @@ export async function getAgent(agentId) {
  * Update agent status or current task
  */
 export async function updateAgent(agentId, updates) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const agent = mockAgents.find(a => a.id === agentId);
-      if (agent) {
-        const updated = { ...agent, ...updates };
-        const index = mockAgents.findIndex(a => a.id === agentId);
-        mockAgents[index] = updated;
-        resolve({
-          status: 'success',
-          data: updated,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        reject({
-          status: 'error',
-          message: 'Agent not found',
-          code: 404
-        });
-      }
-    }, 250);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/agents/${agentId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    });
+    if (!response.ok) throw new Error('Failed to update agent');
+    const data = await response.json();
+    return {
+      status: 'success',
+      data: data,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    throw {
+      status: 'error',
+      message: 'Failed to update agent',
+      code: 500
+    };
+  }
 }
 
 /**
@@ -185,16 +88,20 @@ export async function updateAgent(agentId, updates) {
  * Returns all messages from The Hub
  */
 export async function getMessages() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 'success',
-        data: mockMessages,
-        count: mockMessages.length,
-        timestamp: new Date().toISOString()
-      });
-    }, 300);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/comms/messages`);
+    if (!response.ok) throw new Error('Failed to fetch messages');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('getMessages error:', error);
+    return {
+      status: 'success',
+      data: [],
+      count: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
 }
 
 /**
@@ -202,52 +109,65 @@ export async function getMessages() {
  * Send a new message
  */
 export async function sendMessage(senderId, senderName, messageText, avatar, avatarClass) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newMessage = {
-        id: mockMessages.length + 1,
-        senderId: senderId,
-        senderName: senderName,
-        avatar: avatar,
-        avatarClass: avatarClass,
-        timestamp: new Date(),
-        text: messageText
-      };
-      
-      mockMessages.push(newMessage);
-      
-      resolve({
-        status: 'success',
-        data: newMessage,
-        timestamp: new Date().toISOString()
-      });
-    }, 200);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/comms/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        senderId,
+        senderName,
+        text: messageText,
+        avatar,
+        avatarClass
+      })
+    });
+    if (!response.ok) throw new Error('Failed to send message');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw {
+      status: 'error',
+      message: 'Failed to send message',
+      code: 500
+    };
+  }
 }
 
 /**
- * GET /api/agents/stats
+ * GET /api/agents/stats (derived from agents list)
  * Returns agent statistics
  */
 export async function getAgentStats() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const onlineCount = mockAgents.filter(a => a.status === 'online').length;
-      const workingCount = mockAgents.filter(a => a.activity === 'working').length;
-      
-      resolve({
-        status: 'success',
-        data: {
-          totalAgents: mockAgents.length,
-          onlineAgents: onlineCount,
-          offlineAgents: mockAgents.length - onlineCount,
-          workingAgents: workingCount,
-          idleAgents: onlineCount - workingCount
-        },
-        timestamp: new Date().toISOString()
-      });
-    }, 200);
-  });
+  try {
+    const agentsResp = await getAgents();
+    const agents = agentsResp.data;
+    const onlineCount = agents.filter(a => a.status === 'online').length;
+    const workingCount = agents.filter(a => a.activity === 'working').length;
+    
+    return {
+      status: 'success',
+      data: {
+        totalAgents: agents.length,
+        onlineAgents: onlineCount,
+        offlineAgents: agents.length - onlineCount,
+        workingAgents: workingCount,
+        idleAgents: onlineCount - workingCount
+      },
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    return {
+      status: 'success',
+      data: {
+        totalAgents: 0,
+        onlineAgents: 0,
+        offlineAgents: 0,
+        workingAgents: 0,
+        idleAgents: 0
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
 }
 
 /**
@@ -255,20 +175,23 @@ export async function getAgentStats() {
  * Returns communication statistics
  */
 export async function getCommsStats() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 'success',
-        data: {
-          totalMessages: mockMessages.length,
-          activeChannels: 1,
-          lastMessageTime: mockMessages[mockMessages.length - 1].timestamp,
-          participants: [...new Set(mockMessages.map(m => m.senderId))].length
-        },
-        timestamp: new Date().toISOString()
-      });
-    }, 200);
-  });
+  try {
+    const response = await fetch(`${API_BASE}/api/comms/stats`);
+    if (!response.ok) throw new Error('Failed to fetch comms stats');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return {
+      status: 'success',
+      data: {
+        totalMessages: 0,
+        activeChannels: 1,
+        lastMessageTime: null,
+        participants: 0
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
 }
 
 /**
