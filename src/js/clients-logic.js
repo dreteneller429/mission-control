@@ -13,6 +13,11 @@ class ClientsManager {
   }
 
   setupEventListeners() {
+    // Add Client button
+    document.getElementById('addClientBtn')?.addEventListener('click', () => {
+      this.openAddClientModal();
+    });
+    
     // Search
     document.getElementById('searchInput')?.addEventListener('input', (e) => {
       this.filterClients(e.target.value);
@@ -38,6 +43,13 @@ class ClientsManager {
         document.getElementById('clientModal').classList.remove('open');
       }
     });
+  }
+  
+  openAddClientModal() {
+    // FIX 9A: Placeholder for add client modal
+    // TODO: Implement glass modal with fields: name, company, status dropdown (Active/Prospect/Closed), MRR, notes
+    // POST to /api/clients with client data
+    alert('Add Client form - to be implemented. Fields: name, company, status, MRR, notes. Backend POST to /api/clients');
   }
 
   async loadClients() {
