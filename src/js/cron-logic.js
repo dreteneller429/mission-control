@@ -91,7 +91,7 @@ class CronJobsManager {
    * Load all cron jobs from backend API
    */
   loadJobsFromAPI() {
-    fetch('/api/cron')
+    fetch('http://localhost:3000/api/cron')
       .then(res => {
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
@@ -103,7 +103,9 @@ class CronJobsManager {
       })
       .catch(err => {
         console.error('❌ Failed to load cron jobs:', err);
-        this.showErrorNotification('Failed to load cron jobs');
+        this.jobs = [];
+        this.renderJobsList();
+        this.showErrorNotification('Failed to load cron jobs - ' + err.message);
       });
   }
 
@@ -362,7 +364,7 @@ class CronJobsManager {
    * Create a new cron job via API
    */
   createJobViaAPI(jobData) {
-    fetch('/api/cron', {
+    fetch('http://localhost:3000/api/cron', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(jobData),
@@ -396,7 +398,7 @@ class CronJobsManager {
    * Update an existing cron job via API
    */
   updateJobViaAPI(jobId, updates) {
-    fetch(`/api/cron/${jobId}`, {
+    fetch(`http://localhost:3000/api/cron/${jobId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
@@ -429,7 +431,7 @@ class CronJobsManager {
    * Toggle job status (active/disabled)
    */
   toggleJobStatus(jobId, isActive) {
-    fetch(`/api/cron/${jobId}`, {
+    fetch(`http://localhost:3000/api/cron/${jobId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -465,7 +467,7 @@ class CronJobsManager {
     const job = this.jobs.find(j => j.id === jobId);
     const jobName = job?.name || 'Job';
 
-    fetch(`/api/cron/${jobId}`, {
+    fetch(`http://localhost:3000/api/cron/${jobId}`, {
       method: 'DELETE',
     })
       .then(res => {
